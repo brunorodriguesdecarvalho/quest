@@ -63,7 +63,7 @@ require('./controller/questionController')(app)
 
 app.get('/', (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'})
-    res.end('Bem Vindo ao Quest - Faça Login para jogar...)')
+    res.end('Bem Vindo ao Quest - Faca Login para jogar...)')
 })
 
 app.listen(PORT, () => {
