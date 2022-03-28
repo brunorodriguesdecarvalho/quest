@@ -29,7 +29,7 @@ const { stringify } = require("querystring");
 const cors = require('cors')
 
 //Reconhecimento dinâmico de porta do servidor ou localhost = 5000
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 4201
 const msg_PORT = `Servidor Node.JS para QUEST FATEC disponível via porta ${PORT}!`
 
 // hard coded configuration object
@@ -63,7 +63,7 @@ require('./controller/questionController')(app)
 
 app.get('/', (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'})
-    res.end('Bem Vindo ao Quest - Faca Login para jogar...')
+    res.end('Bem Vindo ao Quest - Cadastre-se ou Faca Login para jogar...')
 })
 
 app.listen(PORT, () => {

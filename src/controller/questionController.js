@@ -6,11 +6,11 @@ const router = express.Router()
 
 router.use(authMiddleware)
 
-router.get('/', (req, res) => {
+router.get('/', async(req, res) => {
     res.send({ ok: true, user: req.userId })
 })
 
-router.get('/perguntas', (req,res)=>{
+router.get('/perguntas', async(req,res)=>{
 
     categoriaReq = req.query.categoria
     questoes_ja_respondidas = req.query.questoes_ja_respondidas;
@@ -37,21 +37,18 @@ router.get('/perguntas', (req,res)=>{
     })
 })
 
-router.post('/perguntas/novapergunta', (req, res) => {
-    idPergunta = 
-    
+router.post('/perguntas/novapergunta', async(req, res) => {  
     novaPergunta = {
-        idPergunta : req.query.idPergunta,
-        categoria : req.query.categoria,
-        pergunta : req.query.pergunta,
-        respostaCorreta : req.query.respostaCorreta,
-        alternativaA : req.query.alternativaA,
-        alternativaB : req.query.alternativaB,
-        alternativaC : req.query.alternativaC,
-        alternativaD : req.query.alternativaD,
-        info: req.query.info
+        idPergunta : req.body.idPergunta,
+        categoria : req.body.categoria,
+        pergunta : req.body.pergunta,
+        respostaCorreta : req.body.respostaCorreta,
+        alternativaA : req.body.alternativaA,
+        alternativaB : req.body.alternativaB,
+        alternativaC : req.body.alternativaC,
+        alternativaD : req.body.alternativaD,
+        info: req.body.info
     } 
-
 
     MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
         if (err) throw err;
@@ -63,7 +60,7 @@ router.post('/perguntas/novapergunta', (req, res) => {
         })
     })
 
-    res.send("teste")
+    res.send("Pergunta cadastrada com sucesso!")
 })
 
 module.exports = app => app.use('/p', router)

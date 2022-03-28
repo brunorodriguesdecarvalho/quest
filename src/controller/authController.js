@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
 
     try {
         if(await User.findOne({ email }))
-            return res.status(400).send({error: 'User already exists '})
+            return res.status(412).send({error: 'User already exists '})
 
         const user = await User.create(req.body)
 
@@ -54,7 +54,7 @@ router.post('/authenticate', async(req, res) => {
         expiresIn: 86400
     })
 
-    res.send({ 
+    res.statu(200).send({ 
         user, 
         token: generateToken({ id: user.id })
     })
