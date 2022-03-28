@@ -54,7 +54,7 @@ router.post('/authenticate', async(req, res) => {
         expiresIn: 86400
     })
 
-    res.statu(200).send({ 
+    res.status(200).send({ 
         user, 
         token: generateToken({ id: user.id })
     })
