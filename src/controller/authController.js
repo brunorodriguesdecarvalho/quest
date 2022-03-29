@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
 
     try {
         if(await User.findOne({ email }))
-            return res.status(412).send({error: 'E-mail já foi utilizado no cadastro de outro usuário. Por favor informe outro e-mail'})
+            return res.status(412).send({error: 'Falha - Usuário já existe com esse E-mail.Por favor informe outro e-mail.'})
 
         const user = await User.create(req.body)
 
@@ -31,7 +31,7 @@ router.post('/register', async (req, res) => {
         } )
 
     } catch (err) {
-        return res.status(400).send( {error: 'Registration Failed'} )
+        return res.status(400).send( {error: 'Falha - Registro não realizado.'} )
     }
 })
 
@@ -41,11 +41,11 @@ router.post('/authenticate', async(req, res) => {
     const user = await User.findOne( { email } ).select('+password')
 
     if(!user) {
-        return res.status(400).send({ error: 'Usuário não encontrado com base no e-mail informado'})
+        return res.status(400).send({ error: 'Usuário não encontrado com base no e-mail informado.'})
     }
 
     if(!await bcrypt.compare(password, user.password)){
-        return res.status(401).send({ error: 'Senha Inválida'})
+        return res.status(401).send({ error: 'Senha Inválida.'})
     }
 
     user.password = undefined
