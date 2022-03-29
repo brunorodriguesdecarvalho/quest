@@ -1,0 +1,422 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Esse é o mapeamento de todas as rotas do backend para o jogo Quest, criado como solicitado na disciplina de Engenharia de Software 3.",
+    "version": "0.0.2",
+    "title": "Quest - Backend",
+    "termsOfService": "Not defined",
+    "contact": {
+      "email": "questgame300@gmail.com"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://www.google.com"
+    }
+  },
+  "host": "quest3v2.herokuapp.com",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Index",
+      "description": "Páginal Inicial - Antes Login",
+      "externalDocs": {
+        "description": "Link: ",
+        "url": "https://quest3v2.herokuapp.com/"
+      }
+    },
+    {
+      "name": "Autenticação e Cadastro de Usuários"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Index"
+        ],
+        "summary": "Teste Servidor Online - Sem Senha",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "Servidor Online - Bem Vindo ao Quest - Cadastre-se ou Faca Login para jogar."
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Autenticação e Cadastro de Usuários"
+        ],
+        "summary": "Para registro de novos usuários",
+        "description": "Serve para autenticar o usuário.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "Usado para registrar novo usuário.",
+            "schema": {
+              "$ref": "#/definitions/UserSchemaPre"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário registrado com sucesso.",
+            "schema": {
+              "$ref": "#/definitions/UserRegistered"
+            }
+          },
+          "400": {
+            "description": "Falha - Registro não realizado."
+          },
+          "412": {
+            "description": "Falha - Usuário já existe com esse E-mail.Por favor informe outro e-mail."
+          }
+        }
+      }
+    },
+    "/auth/authenticate": {
+      "post": {
+        "tags": [
+          "Autenticação e Cadastro de Usuários"
+        ],
+        "summary": "Para gerar o Token para garantir autenticação do usuário.",
+        "description": "Para autenticar o usuário com base em um e-mail e senha pré-cadastrados.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "Usado para gerar um token para ser usado para autenticação. ",
+            "schema": {
+              "$ref": "#/definitions/UserAuthPre"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário autenticado e token criado.",
+            "schema": {
+              "$ref": "#/definitions/UserAuthPos"
+            }
+          },
+          "400": {
+            "description": "Usuário não encontrado com base no e-mail informado."
+          },
+          "401": {
+            "description": "Senha Inválida."
+          }
+        }
+      }
+    },
+    "/jogo/": {
+      "get": {
+        "tags": [
+          "Perguntas"
+        ],
+        "summary": "Home Pós Autenticação do Usuário",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "authorization",
+            "description": "Token do usuário para validar acesso ao jogo. Deve ser composto por Bearer + 'espaço' + Token, caso contrário será considerado inválido.",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token validado",
+            "schema": {
+              "$ref": "#/definitions/UserAuthenticated"
+            }
+          },
+          "401": {
+            "description": "Token inválido"
+          },
+          "411": {
+            "description": "Token não informado"
+          },
+          "412": {
+            "description": "Erro no Token"
+          },
+          "417": {
+            "description": "Token formatado incorretamente"
+          }
+        }
+      }
+    },
+    "/jogo/perguntas": {
+      "get": {
+        "tags": [
+          "Perguntas"
+        ],
+        "summary": "Buscar nova pergunta",
+        "description": "Retornar uma pergunta que ainda não foi realizada na sessão atual",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "authorization",
+            "description": "Token do usuário para validar acesso ao jogo. Deve ser composto por Bearer + 'espaço' + Token, caso contrário será considerado inválido.",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Busca de nova pergunta realizada com sucesso."
+          },
+          "401": {
+            "description": "Token inválido"
+          },
+          "411": {
+            "description": "Token não informado"
+          },
+          "412": {
+            "description": "Erro no Token"
+          },
+          "417": {
+            "description": "Token formatado incorretamente"
+          },
+          "419": {
+            "description": "Falha - [req.query.questoes_ja_respondidas] não informado na requisição. Informe o número zero se não respondeu nenhuma pergunta."
+          },
+          "420": {
+            "description": "Falha - [req.query.categoria] não foi informado na requisição ou em branco."
+          },
+          "427": {
+            "description": "Falha - [req.query.categoria] inválida. Escolha entre essas opções: Sociedade, Variedades, Mundo, Esportes, Ciência ou Artes e Entretenimento."
+          },
+          "430": {
+            "description": "Ainda não há outras perguntas cadastradas para."
+          }
+        }
+      }
+    },
+    "/jogo/novapergunta": {
+      "post": {
+        "tags": [
+          "Perguntas"
+        ],
+        "summary": "Cadastro nova pergunta",
+        "description": "Serve para o Administrador cadastrar uma nova pergunta.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Pergunta",
+            "description": "Usado para identificar a pergunta. ",
+            "schema": {
+              "$ref": "#/definitions/Pergunta"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pergunta cadastrada com sucesso."
+          },
+          "401": {
+            "description": "Token inválido"
+          },
+          "411": {
+            "description": "Token não informado"
+          },
+          "412": {
+            "description": "Erro no Token"
+          },
+          "417": {
+            "description": "Token formatado incorretamente"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UserAuthPre": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "UserAuthPre"
+      }
+    },
+    "UserAuthPos": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "UserAuthPos"
+      }
+    },
+    "UserSchemaPre": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "UserSchemaPre"
+      }
+    },
+    "UserSchemaPos": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "dateTime"
+        },
+        "id": {
+          "type": "string"
+        },
+        "__v": {
+          "type": "integer"
+        }
+      },
+      "xml": {
+        "name": "UserSchemaPos"
+      }
+    },
+    "UserRegistered": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/UserSchemaPos"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "UserRegistered"
+      }
+    },
+    "UserAuthenticated": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean",
+          "description": "TRUE se usuário for autenticado com sucesso."
+        },
+        "user": {
+          "type": "string",
+          "description": "ID do usuário no Banco de Dados - Campo '_id'"
+        }
+      },
+      "xml": {
+        "name": "UserAuthenticated"
+      }
+    },
+    "Pergunta": {
+      "type": "object",
+      "required": [
+        "idPergunta",
+        "categoria",
+        "respostaCorreta",
+        "alternativaA",
+        "alternativaB",
+        "alternativaC",
+        "alternativaD",
+        "info"
+      ],
+      "properties": {
+        "idPergunta": {
+          "type": "string"
+        },
+        "categoria": {
+          "type": "string"
+        },
+        "respostaCorreta": {
+          "type": "string"
+        },
+        "alternativaA": {
+          "type": "string"
+        },
+        "alternativaB": {
+          "type": "string"
+        },
+        "alternativaC": {
+          "type": "string"
+        },
+        "alternativaD": {
+          "type": "string"
+        },
+        "info": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "pergunta"
+      }
+    }
+  }
+}
