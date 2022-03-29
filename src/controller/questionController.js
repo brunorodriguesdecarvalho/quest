@@ -15,10 +15,10 @@ router.get('/', async(req, res) => {
 router.get('/perguntas', async(req,res)=>{   
 
     if (!req.query.questoes_ja_respondidas) {
-        return res.status(417).send("Falha - [req.query.questoes_ja_respondidas] não informado na requisição. Informe o número zero se não respondeu nenhuma pergunta.")
+        return res.status(419).send("Falha - [req.query.questoes_ja_respondidas] não informado na requisição. Informe o número zero se não respondeu nenhuma pergunta.")
 
     } else if (!req.query.categoria) {
-        return res.status(417).send("Falha - [req.query.categoria] não foi informado na requisição ou em branco.")
+        return res.status(420).send("Falha - [req.query.categoria] não foi informado na requisição ou em branco.")
 
     } else if ( 
             (req.query.categoria != "Sociedade") &&
@@ -28,7 +28,7 @@ router.get('/perguntas', async(req,res)=>{
             (req.query.categoria != "Ciência") &&
             (req.query.categoria != "Artes e Entretenimento")
         ) {
-        return res.status(417).send("Falha - [req.query.categoria] inválida. Escolha entre essas opções: Sociedade, Variedades, Mundo, Esportes, Ciência ou Artes e Entretenimento.")
+        return res.status(406).send("Falha - [req.query.categoria] inválida. Escolha entre essas opções: Sociedade, Variedades, Mundo, Esportes, Ciência ou Artes e Entretenimento.")
 
     } else {
             categoriaReq = req.query.categoria
