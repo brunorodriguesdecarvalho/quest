@@ -28,7 +28,7 @@ router.get('/perguntas', async(req,res)=>{
             (req.query.categoria != "Ciência") &&
             (req.query.categoria != "Artes e Entretenimento")
         ) {
-        return res.status(406).send("Falha - [req.query.categoria] inválida. Escolha entre essas opções: Sociedade, Variedades, Mundo, Esportes, Ciência ou Artes e Entretenimento.")
+        return res.status(427).send("Falha - [req.query.categoria] inválida. Escolha entre essas opções: Sociedade, Variedades, Mundo, Esportes, Ciência ou Artes e Entretenimento.")
 
     } else {
             categoriaReq = req.query.categoria
@@ -49,7 +49,7 @@ router.get('/perguntas', async(req,res)=>{
                 if (err) throw err;
                 var dbo = QuestDB.db("QuestDB");
                 dbo.collection("QuestQuestions").find(filtro_perguntas_respondidas).toArray(function await(err, questions) {
-                    if (questions.length < 1) return res.status(404).send("Ainda não há outras perguntas cadastradas para " + categoriaReq)
+                    if (questions.length < 1) return res.status(430).send("Ainda não há outras perguntas cadastradas para " + categoriaReq)
                     if (err) throw err;
                     res.status(200).send(questions)
                     QuestDB.close(); 
