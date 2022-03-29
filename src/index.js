@@ -57,6 +57,7 @@ app.use(confCors.originUndefined , cors(confCors.cors))
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false}))
+app.use("/swagger", express.static('swagger'));
 
 require('./controller/authController')(app)
 require('./controller/questionController')(app)
