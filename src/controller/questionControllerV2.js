@@ -1,8 +1,10 @@
 const { Router } = require('express');
 const express = require('express')
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId
 const uri = process.env.mongoDbURI
-const { route } = require('express/lib/application')
+const { route } = require('express/lib/application');
+const { ObjectID } = require('mongodb');
 const authMiddleware = require('../middlewares/auth')
 
 const router = express.Router()
@@ -73,22 +75,31 @@ router.post('/novapergunta', async(req, res) => {
 
 //DELETE
 
-router.delete('/novapergunta', async(req, res) => {
-    var ObjectId = require('mongodb').ObjectId
-    var ide = ObjectId(req.body._id);
+router.delete('/apagapergunta', async(req, res) => {
+
+    //var _id = ObjectId(String());
+    //var _id = doc.uniqueIds[req.body._id]
+    console.log("_id:", req.body._id)
 
     MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
-        if (err) {res.status(400).send("Erro na conexão");}
+        if (err) { 
+            res.status(400).send("Erro na conexão") 
+        }
         else {
             var dbo = QuestDB.db("QuestDB");
-            dbo.collection("QuestQuestionv2").deleteById(ide, function (err, confirmacao) {
+            dbo.collection("QuestQuestionv2").deleteOne({"_id": ObjectId(req.body._id)}, function (err, confirmacao) {
                 if (err) {
-                    console.log("Erro ao tentar deletar pergunta!")
+                    console.log("Erro ao tentar deletar pergunta: ", err)
                     res.status(400).send("Impossível deletar essa pergunta. Tente outro ID ou insulte o Bruno!")
-                } 
-                res.send
+                } else if (confirmacao.deletedCount == 1) {
+                    console.log("Pergunta deletada com sucesso: ",confirmacao)
+                    res.status(200).send("Pergunta deletada com sucesso.")
+                } else {
+                    res.status(400).send("Deu algum outro erro! Insulte o Bruno!")
+                }
                 QuestDB.close(); 
-            })}
+            })
+        }
     })
 })
 
