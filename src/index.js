@@ -64,6 +64,7 @@ app.use('/swagger', express.static('swagger'));
 
 require('./controller/authController')(app)
 require('./controller/questionController')(app)
+require('./controller/questionControllerV2')(app)
 
 app.get('/', (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'})
