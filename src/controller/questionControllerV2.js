@@ -5,6 +5,7 @@ const ObjectId = require('mongodb').ObjectId
 const uri = process.env.mongoDbURI
 const { route } = require('express/lib/application');
 const { ObjectID } = require('mongodb');
+const { isValidObjectId } = require('../database');
 const authMiddleware = require('../middlewares/auth')
 const bancodedados = 'QuestDB'
 const colecao = 'QuestQuestionv2'
@@ -91,10 +92,6 @@ router.get('/pergunta', async(req,res)=>{
 
     if (!req.query.questoes_ja_respondidas) {
         return res.status(419).send("Falha - [req.query.questoes_ja_respondidas] não informado na requisição. Informe o número zero se não respondeu nenhuma pergunta.")
-
-    } else if (!req.query.categoria) {
-        return res.status(420).send("Falha - [req.query.categoria] não foi informado na requisição ou em branco.")
-
     } else {
         categoriaReq = req.query.categoria
         questoes_ja_respondidas = req.query.questoes_ja_respondidas;
@@ -105,10 +102,14 @@ router.get('/pergunta', async(req,res)=>{
         filtro_perguntas_respondidas.push( { categoria: categoriaReq } )
         
         for(i=0;qtd_perguntas_respondidas>i;i++) {
-            filtro_perguntas_respondidas.push( { idPergunta: { $ne: String(questoes_ja_respondidas[i]) } } )
+            item = isValidObjectId(questoes_ja_respondidas[i])
+            filtro_perguntas_respondidas.push( { _id: { $ne: item } } )
         }
 
+        console.log(filtro_perguntas_respondidas)
+
         filtro_perguntas_respondidas = { $and: filtro_perguntas_respondidas }
+
 
         MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
             if (err) throw err;
