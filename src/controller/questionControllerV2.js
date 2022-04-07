@@ -220,19 +220,19 @@ router.delete('/pergunta', async(req, res) => {
 
     MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
         if (err) { 
-            res.status(400).send("Erro na conexão") 
+            res.status(461).send("Erro na conexão") 
         }
         else {
             var dbo = QuestDB.db(bancodedados);
             dbo.collection(colecao).deleteOne({"_id": ObjectId(req.body._id)}, function (err, confirmacao) {
                 if (err) {
                     console.log("Erro ao tentar deletar pergunta: ", err)
-                    res.status(400).send("Impossível deletar essa pergunta. Tente outro ID ou insulte o Bruno!")
+                    res.status(462).send("Impossível deletar essa pergunta. Tente outro ID ou insulte o Bruno!")
                 } else if (confirmacao.deletedCount == 1) {
                     console.log("Pergunta deletada com sucesso: ",confirmacao)
                     res.status(200).send("Pergunta deletada com sucesso.")
                 } else {
-                    res.status(400).send("Deu algum outro erro! Insulte o Bruno!")
+                    res.status(463).send("Deu algum outro erro! Insulte o Bruno!")
                 }
                 QuestDB.close(); 
             })

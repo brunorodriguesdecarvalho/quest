@@ -378,7 +378,12 @@
           },
           {
             "in": "body",
-            "type": null
+            "name": "filtro",
+            "description": "Usado para criar uma pergunta sem o idPergunta.",
+            "schema": {
+              "$ref": "#/definitions/PerguntaUnica"
+            },
+            "required": true
           }
         ],
         "responses": {
@@ -413,7 +418,8 @@
             "description": "Usado para criar uma pergunta sem o idPergunta.",
             "schema": {
               "$ref": "#/definitions/Pergunta2"
-            }
+            },
+            "required": true
           }
         ],
         "responses": {
@@ -489,15 +495,62 @@
           },
           {
             "in": "body",
-            "name": null,
+            "name": "novaPergunta",
+            "description": "Usado para criar uma pergunta sem o idPergunta.",
             "schema": {
               "$ref": "#/definitions/Pergunta2"
-            }
+            },
+            "required": true
           }
         ],
         "responses": {
           "200": {
             "description": "Pergunta alterada com sucesso."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Perguntas (V2)"
+        ],
+        "summary": "Deletar uma pergunta",
+        "description": "Para deletar uma pergunta com base em um _id específico.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "authorization",
+            "description": "Token do usuário para validar acesso ao jogo. Deve ser composto por Bearer + 'espaço' + Token, caso contrário será considerado inválido.",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "_id",
+            "description": "_id da pergunta que será deletada.",
+            "schema": {
+              "$ref": "#/definitions/PerguntaDeletar"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pergunta deletada com sucesso."
+          },
+          "461": {
+            "description": "Falha ao conectar com o Servidor do Banco de Dados"
+          },
+          "462": {
+            "description": "Falha ao deletar - Possível que o ID seja inválido ou não exista."
+          },
+          "463": {
+            "description": "Falha ao deletar - Confirmação de exclusão não recebida."
           }
         }
       }
@@ -689,6 +742,38 @@
       },
       "xml": {
         "name": "pergunta2"
+      }
+    },
+    "PerguntaDeletar": {
+      "type": "object",
+      "required": [
+        "_id"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "perguntadeletar"
+      }
+    },
+    "PerguntaUnica": {
+      "type": "object",
+      "required": [
+        "categoria",
+        "questoes_ja_respondidas"
+      ],
+      "properties": {
+        "categoria": {
+          "type": "string"
+        },
+        "questoes_ja_respondidas": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "perguntaunica"
       }
     }
   }
