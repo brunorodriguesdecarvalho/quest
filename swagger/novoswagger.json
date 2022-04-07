@@ -360,8 +360,8 @@
         "tags": [
           "Perguntas (V2)"
         ],
-        "summary": "Listar todas as perguntas",
-        "description": "Fiz um novo get para listar todas as perguntas. Consulta simples, sem possibilidade de filtro.",
+        "summary": "Listar uma única pergunta para o jogo",
+        "description": "Reestruturação da mecânica de pergunta para o jogo, removendo o antido idPergunta para utilizar apenas _id. Esse get é para atender a seguinte regra: Retornar uma única pergunta, com base em uma categoria. Se o usuário já tiver respondido alguma pergunta, essa pergunta não pode ser usada na mesma sessão, então o cliente pode informar o _id da(s) pergunta(s) respondidas.",
         "consumes": [
           "application/json"
         ],
@@ -375,6 +375,10 @@
             "name": "authorization",
             "description": "Token do usuário para validar acesso ao jogo. Deve ser composto por Bearer + 'espaço' + Token, caso contrário será considerado inválido.",
             "required": true
+          },
+          {
+            "in": "body",
+            "type": null
           }
         ],
         "responses": {
