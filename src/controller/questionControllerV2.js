@@ -134,7 +134,7 @@ router.get('/pergunta', async(req,res) => {
         MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
             if(err) throw err;
             var dbo = QuestDB.db(bancodedados);
-            dbo.collection(colecao).find(filtro).toArray(function await(err, questions) {
+            dbo.collection(colecao).find(filtro).limit(1).toArray(function await(err, questions) {
                 if(err) throw err
                 else if(questions.length==0) {
                     res.status(400).send("Deu ruim, pois a query não tem nenhum resultado com esses filtros (Categoria + Exclusão de certos IDs")
