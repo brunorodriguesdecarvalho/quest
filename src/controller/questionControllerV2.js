@@ -17,27 +17,27 @@ router.use(authMiddleware)
 //CREATE
 router.post('/pergunta', async(req, res) => {  
     if(!req.body.categoria) {
-        res.status(401).send("Falha do Cliente: Faltou informar a categoria")
+        res.status(461).send("Falha do Cliente: Faltou informar a categoria")
         // Falta testar se é uma categoria válida!
     } else if (!req.body.pergunta) {
-        res.status(401).send("Falha do Cliente: Faltou informar a pergunta")
+        res.status(462).send("Falha do Cliente: Faltou informar a pergunta")
     } else if (!req.body.respostaCorreta) {
-        res.status(401).send("Falha do Cliente: Faltou informar a resposta correta")
+        res.status(463).send("Falha do Cliente: Faltou informar a resposta correta")
         //preciso testar algum formato?
     } else if (!req.body.alternativaA) {
-        res.status(401).send("Falha do Cliente: Faltou informar alternativaA")
+        res.status(464).send("Falha do Cliente: Faltou informar alternativaA")
         //preciso testar algum formato?
     } else if (!req.body.alternativaB) {
-        res.status(401).send("Falha do Cliente: Faltou informar alternativaB")
+        res.status(465).send("Falha do Cliente: Faltou informar alternativaB")
         //preciso testar algum formato?
     } else if (!req.body.alternativaC) {
-        res.status(401).send("Falha do Cliente: Faltou informar alternativaC")
+        res.status(466).send("Falha do Cliente: Faltou informar alternativaC")
         //preciso testar algum formato?
     } else if (!req.body.alternativaA) {
-        res.status(401).send("Falha do Cliente: Faltou informar alternativaD")
+        res.status(467).send("Falha do Cliente: Faltou informar alternativaD")
         //preciso testar algum formato?
     } else if (!req.body.info) {
-        res.status(401).send("Falha do Cliente: Faltou informar a fonte")
+        res.status(468).send("Falha do Cliente: Faltou informar a fonte da pergunta.")
     } else {
         novaPergunta = {
             categoria : req.body.categoria,
@@ -51,17 +51,18 @@ router.post('/pergunta', async(req, res) => {
         } 
     
         MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
-            if (err) throw err;
-            else {
+            if (err) {
+                res.status(469).send("Erro de conexão no Mongo - Verifique a URI apontada!")
+            } else {
                 var dbo = QuestDB.db(bancodedados);
                 dbo.collection(colecao).insertOne(novaPergunta, function (err, confirmacao) {
                     if (err) {
                         console.log("Erro ao tentar cadastrar nova pergunta!")
-                        res.status(400).send("Impossível registrar essa pergunta. Tente outro ID ou fale com o Bruno!")
+                        res.status(470).send("Impossível registrar essa pergunta. Tente outro ID ou fale com o Bruno!")
                     } else if (!confirmacao.insertedId) {
                         console.log("Erro ao tentar cadastrar nova pergunta!")
-                        res.status(400).send("Impossível registrar essa pergunta. ID inválido! Tente outro ID. Use sempre números!")
-                        } else {
+                        res.status(471).send("Impossível registrar essa pergunta. ID inválido! Tente outro ID. Use sempre números!")
+                    } else {
                         console.log("Pergunta cadastrada: ", confirmacao.insertedId)
                         res.send("Pergunta cadastrada com sucesso!")
                     }
