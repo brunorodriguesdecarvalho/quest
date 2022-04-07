@@ -89,58 +89,62 @@ router.get('/perguntas', async(req,res)=>{
 
 //READ - REGRA DE FRONT - ÚNICA PERGUNTA QUALQUER DESDE QUE AINDA NÃO RESPONDIDA DURANTE A SESSÃO
 //*** PARA SABER AS PERGUNTAS JÁ RESPONDIDAS, O FRONT PRECISA INFORMAR O ID DA PERGUNTA
-router.get('/teste', async(req,res) => {
-    var categoriaReq = String(req.body.categoria)
-    var respondidas = req.body.questoes_ja_respondidas
-
-    //console.log("Categorias Informadas - REQ: ", categoriaReq)
-    //console.log("Questões Respondidas - REQ: ", respondidas)
-    ///console.log(respondidas.length)
-
-    var filtro
-
-    if(respondidas.length==0 && !req.body.categoria) {
-        //console.log("Sem info de ID")
-        filtro = {}
+router.get('/pergunta', async(req,res) => {
+    if(!req.body.categoria || !req.body) {
+        res.status(400).send("Tá de zoeira né tio?! rsrs")
     } else {
-        filtro = []
-        filtro.push({ categoria: categoriaReq })
+        var categoriaReq = String(req.body.categoria)
+        var respondidas = req.body.questoes_ja_respondidas
 
-        if (respondidas.length===0) {
+        //console.log("Categorias Informadas - REQ: ", categoriaReq)
+        //console.log("Questões Respondidas - REQ: ", respondidas)
+        ///console.log(respondidas.length)
 
-            //console.log("Sem perguntas respondidas!")
-        
-            filtro = { categoria: categoriaReq }
+        var filtro
 
+        if(respondidas.length==0 && !req.body.categoria) {
+            //console.log("Sem info de ID")
+            filtro = {}
         } else {
+            filtro = []
+            filtro.push({ categoria: categoriaReq })
 
-            for(i=0;i<respondidas.length;i++){
-                item = respondidas[i]
-                item = item._id
-                item = ObjectId(item)
-                filtro.push( { _id : { $ne: item } } )
-            }
+            if (respondidas.length===0) {
 
-            filtro = { $and: filtro }
+                //console.log("Sem perguntas respondidas!")
+            
+                filtro = { categoria: categoriaReq }
 
-            //console.log("filtro2: ", filtro)
-        
-        }
-    }
-
-    MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
-        if(err) throw err;
-        var dbo = QuestDB.db(bancodedados);
-        dbo.collection(colecao).find(filtro).toArray(function await(err, questions) {
-            if(err) throw err
-            else if(questions.length==0) {
-                res.status(400).send("Deu ruim, pois a query não tem nenhum resultado com esses filtros (Categoria + Exclusão de certos IDs")
             } else {
-                res.status(200).send(questions)
+
+                for(i=0;i<respondidas.length;i++){
+                    item = respondidas[i]
+                    item = item._id
+                    item = ObjectId(item)
+                    filtro.push( { _id : { $ne: item } } )
+                }
+
+                filtro = { $and: filtro }
+
+                //console.log("filtro2: ", filtro)
+            
             }
-            QuestDB.close(); 
+        }
+
+        MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
+            if(err) throw err;
+            var dbo = QuestDB.db(bancodedados);
+            dbo.collection(colecao).find(filtro).toArray(function await(err, questions) {
+                if(err) throw err
+                else if(questions.length==0) {
+                    res.status(400).send("Deu ruim, pois a query não tem nenhum resultado com esses filtros (Categoria + Exclusão de certos IDs")
+                } else {
+                    res.status(200).send(questions)
+                }
+                QuestDB.close(); 
+            })
         })
-    })
+    }
 })
 
 //UPDATE
