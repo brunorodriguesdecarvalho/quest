@@ -61,8 +61,8 @@ app.use(express.urlencoded({ extended: false}))
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../swagger/novoswagger.json');
 
-app.use('/swagger', express.static('swagger'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//app.use('/swagger', express.static('swagger'));
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 require('./controller/authController')(app)
