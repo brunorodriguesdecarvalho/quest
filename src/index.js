@@ -38,7 +38,8 @@ const confCors = {
     // origin undefined handler
     // see https://github.com/expressjs/cors/issues/71
     originUndefined: function (req, res, next) {
-            next()
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        next()
     },
  
     // Cross Origin Resource Sharing Options

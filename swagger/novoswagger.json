@@ -102,13 +102,6 @@
         ],
         "parameters": [
           {
-            "in": "header",
-            "type": "string",
-            "name": "authorization",
-            "description": "Token do usuário para validar acesso ao jogo. Deve ser composto por Bearer + 'espaço' + Token, caso contrário será considerado inválido.",
-            "required": true
-          },
-          {
             "in": "body",
             "name": "User",
             "description": "Usado para registrar novo usuário.",
