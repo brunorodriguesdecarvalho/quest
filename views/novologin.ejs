@@ -2,30 +2,73 @@
     <head>
         <title>Quest - Cadastro</title>
     </head>
-    <body>
-        <form action=""> 
-            <h1>Quest</h1>
-            <h2>Cadastro</h2>
-            Nome do Jogador: 
-            <input type="text" id="nome">
-            <br><br>
-            Login (e-mail): 
-            <input type="email" id="email">
-            <br><br>
-            Senha: 
-            <input type="password" id="password">
-            <br><br>
-            <input type="submit" value="Criar Jogador">
-            <input type="reset" value="Limpar">
-            <input type="button" value="Voltar" id="voltar">
-        </form>
+    <body> 
+        <h1>Quest</h1>
+        <h2>Cadastro</h2>
+        Nome do Jogador: 
+        <input type="text" id="nome"> 
+        <br><br>
+        Login (e-mail): 
+        <input type="email" id="email">
+        <br><br>
+        Senha: 
+        <input type="password" id="password">
+        <br><br>
+        <input type="button" value="Criar Jogador" id="novo">
+        <input type="reset" value="Limpar">
+        <input type="button" value="Voltar" id="voltar">
     </body>
-    <%- include('scripts'); %>
+
+    <script
+        src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous">
+    </script>
+
+    </script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+
     <script>
-        const botaoNovoJogador = document.getElementById("voltar")
-        botaoNovoJogador.addEventListener('click', voltar)
-        function voltar() {
+        //Botão voltar
+        botaoVoltar = $("#voltar").click(() => {
             location.href="/"
-        }
+        })
+
+        //Botão novo jogador
+        const botaoNovoJogador = $("#novo").click(() => {
+            nameNovo = $("#nome").val()
+            emailNovo = $("#email").val()
+            passwordNovo = $("#password").val()
+
+            if (!nameNovo || !emailNovo || !passwordNovo ) {
+                alert("Por favor preencher todos os campos antes de tentar novamente.")
+            } else {
+
+                usuarioNovo = {
+                    name: nameNovo,
+                    email: emailNovo,
+                    password: passwordNovo
+                    
+                }
+
+                console.log(usuarioNovo)
+
+                /$.ajax({
+                    url: "/auth/register",
+                    type: 'POST',
+                    data: usuarioNovo,
+                    success: function(resposta) {
+                        alert("Usuário cadastrado com sucesso!")
+                        location.href="/"
+                    },
+                    error: function(xhr) {
+                        alert("Falha ao cadastrar. Por favor utilize outro e-mail!")
+                    }
+                });
+
+            }
+
+            
+        })
+
     </script>
 </html>
