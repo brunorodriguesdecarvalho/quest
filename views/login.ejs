@@ -55,10 +55,6 @@
                 }).done(async(retorno) => {
                     //console.log("Chave Pre-set: ", chave)
                     console.log("Usuário Autenticado com Sucesso (done), esse é o token que veio do servidor ;) ==> ", retorno.token)
-
-                    /* sessionStorage.setItem("authorization",chave)
-                    enviar = sessionStorage.getItem("authorization")
-                    console.log("Session Storage Authorization: ", enviar) */
                     location.href="/jogoV2/"
                 })
             }
