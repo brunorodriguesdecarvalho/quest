@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
         user.password = undefined
 
         return res.send( { 
-            user,
+            user, 
             token: generateToken({ id: user.id })
         } )
 
@@ -62,6 +62,8 @@ router.post('/authenticate', async(req, res) => {
 
         session = req.session
         session.authorization = "Bearer " + generateToken({ id: user.id })
+        session.username = user.name
+        session.email = user.email
 
         res.status(200).send({ 
             user, 

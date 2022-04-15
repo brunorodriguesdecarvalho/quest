@@ -2,6 +2,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const sessions = require('express-session');
+var session
 
 //Para usar bibilioteca Express
 const app = express()
@@ -34,7 +35,7 @@ const PORT = process.env.PORT || 4201
 const msg_PORT = `Servidor Node.JS para QUEST FATEC disponível via porta ${PORT}!`
 
 app.use(sessions({
-    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    secret: "perauvamacaosaladaMista*$¨#$@$#@%@$#&*#¨%¨#thisismysecrctekabobraseyfhrgfgrfrty84fwir767",
     saveUninitialized:true,
     cookie: { maxAge: 1000 * 60 * 60 * 24 },
     resave: false
@@ -66,7 +67,6 @@ app.use(confCors.originUndefined , cors(confCors.cors))
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false}))
-var session
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../swagger/novoswagger.json');
@@ -88,7 +88,7 @@ global.document = document;
 
 
 require('./controller/authController')(app)
-require('./controller/questionControllerV2')(app)
+require('./controller/questionControllerV3')(app)
 
 //Criar a rota principal
 app.get('/', (req, res) => {
@@ -98,11 +98,6 @@ app.get('/', (req, res) => {
 app.get('/auth/new', (req, res) => {
     res.render('novologin');
 });
-
-/*app.get('/', (req, res) => {
-    res.writeHead(200, {'Content-Type': 'text/html'})
-    res.end('Bem Vindo ao Quest - Cadastre-se ou Faca Login para jogar...')
-})*/
 
 app.listen(PORT, () => {
     console.log(`${msg_PORT}`)
