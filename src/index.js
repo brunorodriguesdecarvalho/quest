@@ -88,6 +88,7 @@ global.document = document;
 
 
 require('./controller/authController')(app)
+require('./controller/categoryController')(app)
 require('./controller/questionControllerV3')(app)
 
 //Criar a rota principal
