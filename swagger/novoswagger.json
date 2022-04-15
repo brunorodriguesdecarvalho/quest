@@ -164,10 +164,10 @@
               "$ref": "#/definitions/UserAuthPos"
             }
           },
-          "400": {
+          "499": {
             "description": "Usuário não encontrado com base no e-mail informado."
           },
-          "401": {
+          "498": {
             "description": "Senha Inválida."
           }
         }

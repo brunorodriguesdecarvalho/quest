@@ -14,6 +14,12 @@ const router = express.Router()
 
 router.use(authMiddleware)
 
+router.get('/', async(req,res) => {
+    auth = req.headers.authorization || req.body.authorization || req.session.authorization
+    console.log("Token recebido no Servidor - question Controler 1: ", auth)
+    res.render('jogo', {authorization: auth})
+})
+
 //CREATE
 router.post('/pergunta', async(req, res) => {  
     if(!req.body.categoria) {

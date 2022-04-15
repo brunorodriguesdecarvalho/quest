@@ -1,7 +1,7 @@
 {
   "name": "questGame",
-  "version": "0.0.2",
-  "description": "teste de auth",
+  "version": "0.0.3",
+  "description": "teste de front",
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js"
@@ -13,7 +13,12 @@
     "body-parser": "^1.19.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "ejs": "^3.0.2",
     "express": "^4.17.3",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.2",
+    "jquery": "^3.6.0",
+    "jsdom": "^19.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.4.1",
     "mongoose": "^6.2.6",
