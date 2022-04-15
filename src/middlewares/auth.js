@@ -4,7 +4,7 @@ const authConfig = require('../config/auth.json')
 module.exports = (req, res, next) => {
 
     const authHeader = req.session.authorization || req.header.authorization 
-    console.log("Entrando pelo Middleware - AuthHeader: ", authHeader)
+    //console.log("Entrando pelo Middleware - AuthHeader: ", authHeader)
 
     if(!authHeader) {
         //console.log("Tentaram autenticar via Auth, mas não informaram o token!")

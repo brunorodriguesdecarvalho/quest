@@ -17,10 +17,10 @@ router.use(authMiddleware)
 //Rota após o login - Desvio Super Admin
 router.get('/', async(req,res) => {
     emailJogador = req.session.email
-    console.log("emailJogador: ", emailJogador)
+    //console.log("emailJogador: ", emailJogador)
     auth = req.headers.authorization || req.body.authorization || req.session.authorization
     nomeJogador = req.session.username
-    console.log("Token recebido no Servidor - question Controler 1: ", auth)
+    //console.log("Token recebido no Servidor - question Controler 1: ", auth)
     console.log("Quem tentou jogar - question Controler 1: ", nomeJogador)
 
     if (emailJogador == "superadmin@superadmin") {

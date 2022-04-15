@@ -37,7 +37,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/authenticate', async(req, res) => {
 
-    console.log("Estão tentando gerar um token via Auth/Authenticate")
+    //console.log("Estão tentando gerar um token via Auth/Authenticate")
 
     const { email, password } = req.body
     //console.log("Req.Body.email: ", email)
@@ -58,7 +58,7 @@ router.post('/authenticate', async(req, res) => {
 
         //res.render('jogo', { user: res.user, token: generateToken({ id: user.id }) } )
 
-        console.log("Só para avisar que alguém conseguiu gerar com sucesso um token via Auth/Authenticate")
+        //console.log("Só para avisar que alguém conseguiu gerar com sucesso um token via Auth/Authenticate")
 
         session = req.session
         session.authorization = "Bearer " + generateToken({ id: user.id })

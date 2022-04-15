@@ -1,5 +1,193 @@
 <html>
+    <head>
+        <style>
+            th, td {
+                border: 0.5px solid grey;
+                border-radius: 2px;
+                border-collapse: collapse;
+                border-style: groove;
+                padding: 1px
+            }
+        </style>
+    </head>
     <body>
-        Olá <%=nomeJogador%>, você fez login com sucesso! - Perfil: <%=perfil%>
+
+        <h1>
+            Olá <%=nomeJogador%>, você fez login com sucesso! - Perfil: <%=perfil%>
+        </h1>
+
+        <hr>
+
+        <h2> Registrar nova pergunta </h2>
+
+        <form> <!--Formulário base para registro de nova perguntas -->
+            <!--Opções para Categoria de Perguntas-->
+            Categoria: 
+            <select name="categoria" id="categoriaNova">
+                <option value="Artes e Entretenimento">Artes e Entretenimento</option>
+                <option value="Mundo">Mundo</option>
+                <option value="Ciência e Tecnologia">Ciência e Tecnologia</option>
+                <option value="Esportes">Esportes</option>
+                <option value="Sociedade">Sociedade</option>
+                <option value="Variedades">Variedades</option>
+            </select><br>
+
+            <!--Demais dados para cadastrar uma nova pergunta -->
+            Pergunta: <input type="text" id="perguntaNova"></input><br>
+            Resposta Correta: <input type="text" id="respostaCorretaNova"></input><br>
+            Alternativa A: <input type="text" id="alternativaANova"></input><br>
+            Alternativa B: <input type="text" id="alternativaBNova"></input><br>
+            Alternativa C: <input type="text" id="alternativaCNova"></input><br>
+            Alternativa D: <input type="text" id="alternativaDNova"></input><br>
+            info: <input type="text" id="infoNova"></input><br><br>
+
+            <!--Criar Objeto para enviar-->
+
+            <input type="button" value="GRAVAR NOVA PERGUNTA" onclick="gravarNovaPergunta()"></input>
+        </form>
+
+        <hr>
+
+        <h2> Lista de Perguntas Registradas no Jogo </h2>
+
+        <table id="listaPerguntas">
+            <tr>
+                <th>ID</th>
+                <th>Categoria</th>
+                <th>Pergunta</th>
+                <th>Resposta Correta</th>
+                <th>Alternativa A</th>
+                <th>Alternativa B</th>
+                <th>alternativa C</th>
+                <th>alternativa D</th>
+                <th>Info</th>
+                <th>Excluir</th>
+            </tr>
+            <!--Espaço para listart perguntas-->
+        </table> 
+
     </body>
+
+    <script
+        src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous">
+    </script>
+
+    </script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+
+    <script>
+        //Buscar e listar todas as perguntas registradas
+        async function listarPerguntas(perguntas) {
+
+            recebido =`
+                <tr class='perguntaLista' id='tr_${perguntas._id}'>
+                    <td>${perguntas._id}</td>
+                    <td>${perguntas.categoria}</td>
+                    <td>${perguntas.pergunta}</td>
+                    <td>${perguntas.respostaCorreta}</td>
+                    <td>${perguntas.alternativaA}</td>
+                    <td>${perguntas.alternativaB}</td>
+                    <td>${perguntas.alternativaC}</td>
+                    <td>${perguntas.alternativaD}</td>
+                    <td>${perguntas.info}</td>
+                    <td>
+                        <a href="#" onclick="excluir('${perguntas._id}')">EXCLUIR</a>
+                    </td>
+                </tr>
+            `
+
+            $("#listaPerguntas").append(recebido)
+        
+        }
+        
+        async function buscarPerguntas() {
+            $.get(
+                '/jogoV3/perguntas',
+                (perguntas) => {
+                    var qtd = Object.keys(perguntas).length
+                    if (qtd == 0 || !qtd) {
+                        console.log("Não há perguntas cadastradas")
+                        $("#listaPerguntas").append(`<b>AINDA NÃO HÁ PERGUNTAS!</b>`)
+                    } else {
+                        console.log("Quantidade atual de perguntas no banco de dados: ", qtd)
+                        perguntas.forEach(listarPerguntas)
+                    }
+                }
+            )
+        }
+
+        buscarPerguntas()
+
+        //Excluir pergunta específica
+        async function excluir(idPerguntaExcluir) {
+            console.log("começando a deletar")
+            id = {_id: idPerguntaExcluir} 
+            console.log("Id: ", id)
+            $.ajax({
+                url: "/jogoV3/pergunta",
+                type: 'DELETE',
+                data: id,
+                success: function(resposta) {
+                    $('.perguntaLista').remove()
+                    buscarPerguntas()
+                    alert(resposta)
+                },
+                error: function(xhr) {
+                    alert(xhr)
+                    console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.statusText);
+                }
+            });
+        }
+
+        //Cadastrar nova pergunta
+        async function gravarNovaPergunta () {
+
+            //Guardar valores na memória para criação de objeto e validação 
+            categoriaNova = $("#categoriaNova").val(),
+            perguntaNova = $("#perguntaNova").val(),
+            respostaCorretaNova = $("#respostaCorretaNova").val(),
+            alternativaANova = $("#alternativaANova").val(),
+            alternativaBNova = $("#alternativaBNova").val(),
+            alternativaCNova = $("#alternativaCNova").val(),
+            alternativaDNova = $("#alternativaDNova").val(),
+            infoNova = $("#infoNova").val()
+
+            //Criar objeto para os dados que serão cadastrados na nova pergunta
+            var novaPergunta = {
+                categoria : categoriaNova,
+                pergunta : perguntaNova,
+                respostaCorreta : respostaCorretaNova,
+                alternativaA : alternativaANova,
+                alternativaB : alternativaBNova,
+                alternativaC : alternativaCNova,
+                alternativaD : alternativaDNova,
+                info: infoNova
+            }
+
+            //Teste - O que estão tentando cadastrar
+            console.log(novaPergunta)
+
+            if( !perguntaNova || !respostaCorretaNova || !alternativaANova || !alternativaBNova || !alternativaCNova || !alternativaDNova || !infoNova ) {
+                alert("Impossível gravar nova pergunta. Por favor preencha todos os campos e tente novamente.")
+            } else if (respostaCorretaNova != alternativaANova && respostaCorretaNova != alternativaBNova && respostaCorretaNova != alternativaCNova && respostaCorretaNova != alternativaDNova) {
+                alert("A resposta correta não está igual a nenhuma das alternativas. Por favor revise e tente novamente.")
+            } else {
+                $.ajax({
+                    url: "/jogoV3/pergunta",
+                    type: 'POST',
+                    data: novaPergunta,
+                    success: function(resposta) {
+                        $('.perguntaLista').remove()
+                        buscarPerguntas()
+                        alert(resposta)
+                    },
+                    error: function(xhr) {
+                        alert(xhr)
+                        console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.statusText);
+                    }
+                });
+            }
+        }
+    </script>
 </html>

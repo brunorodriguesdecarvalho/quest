@@ -77,7 +77,7 @@ app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Define a View Engine como EJS
 app.set('view engine', 'ejs');
 app.set('views', './views');
-console.log("EJS engine view: OK.")
+//console.log("EJS engine view: OK.")
 
 // Definição das variáveis para criar a DOM para o JQuery funcionar com o EJS
 var jsdom = require("jsdom");
