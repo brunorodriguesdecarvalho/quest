@@ -26,13 +26,13 @@
             <!--Opções para Categoria de Perguntas-->
             Categoria: 
             <select name="categoria" id="categoriaNova">
-                <option value="Artes e Entretenimento">Artes e Entretenimento</option>
+                <!--<option value="Artes e Entretenimento">Artes e Entretenimento</option>
                 <option value="Mundo">Mundo</option>
                 <option value="Ciência e Tecnologia">Ciência e Tecnologia</option>
                 <option value="Esportes">Esportes</option>
                 <option value="Sociedade">Sociedade</option>
                 <option value="Variedades">Variedades</option>
-                <option value="Vestibular">Vestibular</option>
+                <option value="Vestibular">Vestibular</option>-->
             </select>
             <a href="/categoria/"> Gerenciar Categorias</a>
             <br>
@@ -81,6 +81,39 @@
     </script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
 
     <script>
+        //Buscar e listar categorias
+        var dropdown = document.getElementById('categoriaNova');
+        dropdown.length = 0
+        dropdown.selectedIndex = 0
+
+        const request = new XMLHttpRequest();
+        request.open('GET', '/categoria/categorias', true);
+
+        fetch('/categoria/categorias')
+            .then(
+                async function(response) {                    
+                    if (response.status !== 200) {
+                        console.warn('Erro, código: ' + response.status)
+                        return
+                    }
+
+                response.json().then(function(data) {
+                    let option
+
+                    for (let i = 0; i < data.length; i++) {
+                        option = document.createElement('option');
+                        option.text = data[i].categoria;
+                        option.value = data[i].categoria;
+                        dropdown.add(option);
+                        //console.log(option)
+                    }
+                })
+            }
+        )
+        .catch(function(err) {
+            console.error("Erro de Fetch -", err)
+        })
+
         //Buscar e listar todas as perguntas registradas
         async function listarPerguntas(perguntas) {
 
