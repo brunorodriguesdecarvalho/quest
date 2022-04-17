@@ -64,7 +64,8 @@ router.post('/pergunta', async(req, res) => {
             alternativaC : req.body.alternativaC,
             alternativaD : req.body.alternativaD,
             dica : req.body.dica,
-            info: req.body.info
+            info: req.body.info,
+            __v: 0
         } 
     
         MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
@@ -211,7 +212,8 @@ router.put('/pergunta', async(req, res) => {
                         alternativaC : req.body.alternativaC,
                         alternativaD : req.body.alternativaD,
                         info: req.body.info
-                    }
+                    },
+                    $inc: { __v: 1}
                 }
 
                 dbo.collection(colecao).updateOne({"_id": ObjectId(req.body._id)}, pergunta, function (err, confirmacao) {

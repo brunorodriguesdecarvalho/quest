@@ -26,13 +26,6 @@
             <!--Opções para Categoria de Perguntas-->
             Categoria: 
             <select name="categoria" id="categoriaNova">
-                <!--<option value="Artes e Entretenimento">Artes e Entretenimento</option>
-                <option value="Mundo">Mundo</option>
-                <option value="Ciência e Tecnologia">Ciência e Tecnologia</option>
-                <option value="Esportes">Esportes</option>
-                <option value="Sociedade">Sociedade</option>
-                <option value="Variedades">Variedades</option>
-                <option value="Vestibular">Vestibular</option>-->
             </select>
             <a href="/categoria/"> Gerenciar Categorias</a>
             <br>
@@ -67,6 +60,7 @@
                 <th>alternativa D</th>
                 <th>Justificativa / Fonte</th>
                 <th>Dica</th>
+                <th>Versão</th>
                 <th>Excluir</th>
             </tr>
             <!--Espaço para listart perguntas-->
@@ -131,6 +125,7 @@
                     <td>${perguntas.alternativaD}</td>
                     <td>${perguntas.info}</td>
                     <td>${perguntas.dica}</td>
+                    <td>${perguntas.__v}</td>
                     <td>
                         <a href="#" onclick="excluir('${perguntas._id}')">EXCLUIR</a>
                     </td>
