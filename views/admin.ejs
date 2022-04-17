@@ -18,6 +18,8 @@
 
         <hr>
 
+        <a href="/">Voltar</a><br><br>
+
         <h2> Registrar nova pergunta </h2>
 
         <form> <!--Formulário base para registro de nova perguntas -->
@@ -31,7 +33,10 @@
                 <option value="Sociedade">Sociedade</option>
                 <option value="Variedades">Variedades</option>
                 <option value="Vestibular">Vestibular</option>
-            </select><br>
+            </select>
+            <a href="/categoria/"> Gerenciar Categorias</a>
+            <br>
+
 
             <!--Demais dados para cadastrar uma nova pergunta -->
             Pergunta: <input type="text" id="perguntaNova"></input><br>
@@ -41,8 +46,6 @@
             Alternativa C: <input type="text" id="alternativaCNova"></input><br>
             Alternativa D: <input type="text" id="alternativaDNova"></input><br>
             info: <input type="text" id="infoNova"></input><br><br>
-
-            <!--Criar Objeto para enviar-->
 
             <input type="button" value="GRAVAR NOVA PERGUNTA" onclick="gravarNovaPergunta()"></input>
         </form>
@@ -185,7 +188,7 @@
                     },
                     error: function(xhr) {
                         alert(xhr)
-                        console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.statusText);
+                        console.log("Não deu certo a criação de uma nova pergunta!!: " + xhr.status + " " + xhr.statusText);
                     }
                 });
             }

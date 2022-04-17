@@ -1,0 +1,162 @@
+<html>
+    <head>
+        <style>
+            th, td {
+                border: 0.5px solid grey;
+                border-radius: 2px;
+                border-collapse: collapse;
+                border-style: groove;
+                padding: 1px
+            }
+        </style>
+    </head>
+    <body>
+        <h1>
+            Olá <%=nomeJogador%>, você fez login com sucesso! - Perfil: <%=perfil%>
+        </h1>
+
+        <hr>
+        <a href="/jogoV3/">Voltar</a><br><br>
+        <h2> Registrar nova Categoria </h2>
+
+        Nova Categoria: <input type="text" id="categoriaNova"></input><br>
+        Categoria Grátis:
+        <select name="categoria" id="freeNova">
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+        </select> <br><br>
+        <input type="button" value="GRAVAR" onclick="gravarNovaCategoria()"></input>
+        <br>
+
+        <hr>
+
+        <h2> Lista de Categorias Registradas no Jogo </h2>
+
+        <table id="listaCategorias">
+            <tr>
+                <th>ID</th>
+                <th>Nome da Categoria</th>
+                <th>Grátis</th>
+                <th>Data de Criação</th>
+                <th>Excluir</th>
+            </tr>
+            <!--Espaço para listart perguntas-->
+        </table>
+
+    </body>
+
+    <script
+        src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous">
+    </script>
+
+    </script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+
+    <script>
+        //Listar todas as categorias
+        async function listarCategorias(categorias) {
+
+            var traducao_categoria_free = null
+
+            if (categorias.free == true) {
+                traducao_categoria_free = "Sim"
+            } else if (categorias.free == false) {
+                traducao_categoria_free = "Não"
+            } else {
+                traducao_categoria_free = "Erro"
+            }
+
+            recebido =`
+                <tr class='categoriaLista' id='tr_${categorias._id}'>
+                    <td>${categorias._id}</td>
+                    <td>${categorias.categoria}</td>
+                    <td>${traducao_categoria_free}</td>
+                    <td>${categorias.createdAt}</td>
+                    <td>
+                        <a href="#" onclick="excluir('${categorias._id}')">EXCLUIR</a>
+                    </td>
+                </tr>
+            `
+
+            $("#listaCategorias").append(recebido)
+        
+        }
+        
+        //Buscar categorias
+        async function buscarCategorias() {
+            $.get(
+                '/categoria/categorias',
+                (categorias) => {
+                    var qtd = Object.keys(categorias).length
+                    if (qtd == 0 || !qtd) {
+                        console.log("Não há categorias cadastradas")
+                        $("#listaCategorias").append(`<b>AINDA NÃO HÁ CATEGORIAS!</b>`)
+                    } else {
+                        console.log("Quantidade atual de categorias no banco de dados: ", qtd)
+                        categorias.forEach(listarCategorias)
+                    }
+                }
+            )
+        }
+
+        buscarCategorias()
+
+        //Excluir categoria
+        async function excluir(idCategoriaExcluir) {
+            console.log("começando a deletar")
+            id = {_id: idCategoriaExcluir} 
+            console.log("Id: ", id)
+            $.ajax({
+                url: "/categoria/",
+                type: 'DELETE',
+                data: id,
+                success: function(resposta) {
+                    $('.categoriaLista').remove()
+                    buscarCategorias()
+                    alert(resposta)
+                },
+                error: function(xhr) {
+                    alert(xhr)
+                    console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.statusText);
+                }
+            });
+        }
+
+        //Cadastrar nova categoria
+        async function gravarNovaCategoria () {
+
+            //Guardar valores na memória para criação de objeto e validação 
+            categoriaNova = $("#categoriaNova").val()
+            freeNova = $("#freeNova").val()
+
+            //Criar objeto para os dados que serão cadastrados na nova categoria
+            var novaCategoria = {
+                categoria : categoriaNova,
+                free : freeNova
+            }
+
+            //Teste - O que estão tentando cadastrar
+            console.log(novaCategoria)
+
+            if( !categoriaNova || !freeNova ) {
+                alert("Impossível gravar nova categoria. Por favor preencha todos os campos e tente novamente.")
+            } else {
+                $.ajax({
+                    url: "/categoria/",
+                    type: 'POST',
+                    data: novaCategoria, 
+                    success: function(resposta) {
+                        $('.categoriaLista').remove()
+                        buscarCategorias()
+                        alert("Categoria registrada com sucesso!")
+                    },
+                    error: function(xhr) {
+                        alert(xhr)
+                        console.log("Não deu certo a criação de uma nova categoria!!: " + xhr.status + " " + xhr.statusText);
+                    }
+                });
+            }
+        }
+    </script>
+</html>

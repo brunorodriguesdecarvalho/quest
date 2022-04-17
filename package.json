@@ -1,6 +1,6 @@
 {
   "name": "questGame",
-  "version": "0.0.3",
+  "version": "0.0.2",
   "description": "teste de front",
   "main": "src/index.js",
   "scripts": {
