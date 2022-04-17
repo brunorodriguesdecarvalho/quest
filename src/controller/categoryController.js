@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const authConfig = require('../config/auth.json')
 const Category = require('../models/categories')
 const colecaoCategoria = 'categories'
+const colecao = 'QuestQuestionv2'
 
 const { Router } = require('express');
 const MongoClient = require('mongodb').MongoClient;
@@ -95,7 +96,6 @@ router.put('/', async (req, res) => {
             var update = {
                 categoria: req.body.categoriaNova,
                 free: req.body.freeNova,
-                //$inc: { __v: 1}
             }
 
             MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
@@ -110,10 +110,33 @@ router.put('/', async (req, res) => {
                             res.status(462).send("Impossível alterar essa categoria. Tente outro ID ou insulte o Bruno!")
                         } else if (confirmacao.updatedExisting = true ) {
                             console.log("Categoria alterada com sucesso: ",confirmacao)
-                            res.status(200).send("Categoria alterada com sucesso.")
+                            //res.status(200).send("Categoria alterada com sucesso. Falta alterar as perguntas!")
+                            MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
+                                if (err) { 
+                                    console.log("Erro ao tentar atualizar a categoria nas perguntas: ", err)
+                                    res.status(461).send("Erro na conexão: ", err) 
+                                }
+                                else {
+                                    console.log("Não deu erro ao tentar atualizar a categoria nas perguntas?")
+                                    var dbo = QuestDB.db(bancodedados);
+                                    dbo.collection(colecao).updateMany({"categoria": req.body.categoriaVelha},{$set: {categoria:req.body.categoriaNova}, $inc: { __v: 1}}, function (err, confirmacao) {
+                                        if (err) {
+                                            console.log("Erro ao tentar atualizar as categorias das perguntas já existentes: ", err)
+                                            res.status(462).send("Impossível alterar essa categoria. Tente outro ID ou insulte o Bruno!")
+                                        } else if (confirmacao.matchedCount > 0 ) {
+                                            console.log("Categoria alterada com sucesso nas perguntas: ",confirmacao)
+                                            res.status(200).send("Categoria atualizada nas perguntas com sucesso.")
+                                        } else {
+                                            console.log("Categoria não foi atualizada nas perguntas com sucesso: ",confirmacao)
+                                            res.status(463).send("Deu algum outro erro durante atualização das categorias nas perguntas já existentes! Insulte o Bruno!")
+                                        }
+                                        QuestDB.close();  
+                                    })
+                                }
+                            })
                         } else {
                             console.log("Categoria não foi alterada com sucesso: ",confirmacao)
-                            res.status(463).send("Deu algum outro erro! Insulte o Bruno!")
+                            res.status(463).send("Deu algum outro erro antes de atualizar as categorias nas perguntas! Insulte o Bruno!")
                         }
                         QuestDB.close();  
                     })

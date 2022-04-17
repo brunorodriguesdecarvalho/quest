@@ -87,7 +87,10 @@
             recebido =`
                 <tr class='categoriaLista' id='tr_${categorias._id}'>
                     <td>${categorias._id}</td>
-                    <td><input type="text" value="${categorias.categoria}" id='categoria_nome_${categorias._id}'></input></td>
+                    <td>
+                        <input type="text" value="${categorias.categoria}" id='categoria_nome_nova${categorias._id}'></input>
+                        <input type="hidden" value="${categorias.categoria}" id='categoria_nome_velha${categorias._id}'></input>
+                    </td>
                     <td id='categoria_free_${categorias._id}' value='categoria_free_${categorias._id}'>
                         ${recebido_categoria_free}
                     </td>
@@ -108,17 +111,19 @@
 
         //Editar categoria específica
         async function editar(idParaEditar) {
-            idCategoriaNome = "#categoria_nome_" + idParaEditar
-            categoriaNomeNova = $(idCategoriaNome).val()
+            idCategoriaNomeNova = "#categoria_nome_nova" + idParaEditar
+            categoriaNomeNova = $(idCategoriaNomeNova).val()
+
+            idCategoriaNomeVelha = "#categoria_nome_velha" + idParaEditar
+            categoriaNomeVelha = $(idCategoriaNomeVelha).val()
 
             idFreeNova = "#freeNova_" + idParaEditar
-            console.log("idFreeNova: ", idFreeNova)
             categoriaFreeNova = $(idFreeNova).val()
-            console.log("categoriaFreeNova: ", categoriaFreeNova)
-
+            
             var novaCategoria = {
                 _id: idParaEditar,
                 categoriaNova : categoriaNomeNova,
+                categoriaVelha : categoriaNomeVelha,
                 freeNova : categoriaFreeNova
             }
 
