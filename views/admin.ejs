@@ -8,6 +8,10 @@
                 border-style: groove;
                 padding: 1px
             }
+            textarea {
+                width: auto;
+                height: auto;
+            }
         </style>
     </head>
     <body>
@@ -111,21 +115,39 @@
         })
 
         //Buscar e listar todas as perguntas registradas
+        //<input type="text" value="${perguntas.pergunta}" id='pergunta_enunciado_nova${perguntas._id}'></input>
         async function listarPerguntas(perguntas) {
+            versao_pergunta = perguntas.__v +1
 
             recebido =`
                 <tr class='perguntaLista' id='tr_${perguntas._id}'>
-                    <td>${perguntas._id}</td>
+                    <td>${perguntas._id}</td> 
                     <td>${perguntas.categoria}</td>
-                    <td>${perguntas.pergunta}</td>
-                    <td>${perguntas.respostaCorreta}</td>
-                    <td>${perguntas.alternativaA}</td>
-                    <td>${perguntas.alternativaB}</td>
-                    <td>${perguntas.alternativaC}</td>
-                    <td>${perguntas.alternativaD}</td>
-                    <td>${perguntas.info}</td>
-                    <td>${perguntas.dica}</td>
-                    <td>${perguntas.__v}</td>
+                    <td>
+                        <textarea rows="5" cols="20" id='pergunta_enunciado_nova${perguntas._id}'>${perguntas.pergunta}</textarea> 
+                    </td>
+                    <td>
+                        <textarea rows="5" cols="10" id='pergunta_respostaCorreta_nova${perguntas._id}'>${perguntas.respostaCorreta}</textarea> 
+                    </td>
+                    <td>
+                        <textarea rows="5" cols="10" id='pergunta_alternativaA_nova${perguntas._id}'>${perguntas.alternativaA}</textarea> 
+                    </td>
+                    <td>
+                        <textarea rows="5" cols="10" id='pergunta_alternativaB_nova${perguntas._id}'>${perguntas.alternativaB}</textarea> 
+                    </td>
+                    <td>
+                        <textarea rows="5" cols="10" id='pergunta_alternativaC_nova${perguntas._id}'>${perguntas.alternativaC}</textarea> 
+                    </td>
+                    <td>
+                        <textarea rows="5" cols="10" id='pergunta_alternativaD_nova${perguntas._id}'>${perguntas.alternativaD}</textarea> 
+                    </td>
+                    <td>
+                        <textarea rows="5" cols="15" id='pergunta_info_nova${perguntas._id}'>${perguntas.info}</textarea> 
+                    </td>
+                    <td>
+                        <textarea rows="5" cols="10" id='pergunta_dica_nova${perguntas._id}'>${perguntas.dica}</textarea> 
+                    </td>
+                    <td>${versao_pergunta}</td>
                     <td>
                         <a href="#" onclick="excluir('${perguntas._id}')">EXCLUIR</a>
                     </td>
