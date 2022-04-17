@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
     const { categoria, free } = req.body
 
     try {
-        if(!categoria) {
+        if(!categoria || !free) {
             res.status(401).send("Falha do Cliente: Faltou informar nome da categoria")
         } else if(free.lenght === 0) {
             res.status(401).send("Falha do Cliente: Faltou informar se é gratuita")
@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
 
         const createcat = await Category.create(req.body)
 
-        return res.send({createcat})
+        return res.send(createcat)
 
     } catch (err) {
         return res.status(400).send( {error: 'Falha - Registro não realizado.'} )
@@ -86,28 +86,43 @@ router.get('/categorias', async (req, res) => {
 
 //UPDATE
 router.put('/', async (req, res) => {
-    const { oldcategoria, newcategoria, newfree } = req.body
-
-   
     try {
-
-        if(!oldcategoria) {
-            res.status(401).send("Falha do Cliente: Faltou informar nome da categoria a ser editada!")
-        } else if(!await Category.findOne({ categoria: oldcategoria }))
+        if(!req.body._id) {
+            res.status(432).send("Falha do Cliente: Faltou informar a ID da categoria a ser editada!")
+        } else if(!await Category.findOne({"_id": ObjectId(req.body._id)})) {
             return res.status(412).send({error: 'Falha - Categoria não existe.Por favor informe outra categoria.'})
-    
-        var update = {
-            categoria: newcategoria,
-            free: newfree,
-            $inc: { __v: 1}
+        } else {
+            var update = {
+                categoria: req.body.categoriaNova,
+                free: req.body.freeNova,
+                //$inc: { __v: 1}
+            }
+
+            MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
+                if (err) { 
+                    res.status(461).send("Erro na conexão") 
+                }
+                else {
+                    var dbo = QuestDB.db(bancodedados);
+                    dbo.collection(colecaoCategoria).findOneAndUpdate({"_id": ObjectId(req.body._id)},{$set: update, $inc: { __v: 1}}, function (err, confirmacao) {
+                        if (err) {
+                            console.log("Erro ao tentar alterar categoria: ", err)
+                            res.status(462).send("Impossível alterar essa categoria. Tente outro ID ou insulte o Bruno!")
+                        } else if (confirmacao.updatedExisting = true ) {
+                            console.log("Categoria alterada com sucesso: ",confirmacao)
+                            res.status(200).send("Categoria alterada com sucesso.")
+                        } else {
+                            console.log("Categoria não foi alterada com sucesso: ",confirmacao)
+                            res.status(463).send("Deu algum outro erro! Insulte o Bruno!")
+                        }
+                        QuestDB.close();  
+                    })
+                }
+            })
         }
 
-        const upcat = await Category.findOneAndUpdate({categoria: oldcategoria}, update)
-
-        return res.status(200).send({upcat})
-
     } catch (err) {
-        return res.status(400).send( {error: 'Falha - Update não realizado.'} )
+        return res.status(400).send( {error: 'Falha - Update de Categoria não realizado.'} )
     }
 })
 

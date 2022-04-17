@@ -16,15 +16,15 @@
         </h1>
 
         <hr>
-        <a href="/jogoV3/">Voltar</a><br><br>
-        <h2> Registrar nova Categoria </h2>
+        <a href="/jogoV3/">Voltar</a><br>
+        <h2> Registrar Nova Categoria </h2>
 
-        Nova Categoria: <input type="text" id="categoriaNova"></input><br>
+        Nova Categoria: <input type="text" id="categoriaNova"></input>&nbsp;&nbsp;
         Categoria Grátis:
         <select name="categoria" id="freeNova">
             <option value="true">Sim</option>
             <option value="false">Não</option>
-        </select> <br><br>
+        </select>&nbsp;&nbsp;
         <input type="button" value="GRAVAR" onclick="gravarNovaCategoria()"></input>
         <br>
 
@@ -38,6 +38,8 @@
                 <th>Nome da Categoria</th>
                 <th>Grátis</th>
                 <th>Data de Criação</th>
+                <th>Versão</th>
+                <th>Salvar Alterações</th>
                 <th>Excluir</th>
             </tr>
             <!--Espaço para listart perguntas-->
@@ -49,7 +51,7 @@
         src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
         crossorigin="anonymous">
-    </script>
+    </script> 
 
     </script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
 
@@ -58,21 +60,42 @@
         async function listarCategorias(categorias) {
 
             var traducao_categoria_free = null
+            var recebido_categoria_free = null
 
             if (categorias.free == true) {
                 traducao_categoria_free = "Sim"
+                recebido_categoria_free = `
+                    <select name="categoria" id="freeNova_${categorias._id}">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>&nbsp;&nbsp;
+                `
             } else if (categorias.free == false) {
                 traducao_categoria_free = "Não"
+                recebido_categoria_free = `
+                    <select name="categoria" id="freeNova_${categorias._id}">
+                        <option value="false">Não</option>
+                        <option value="true">Sim</option>
+                    </select>&nbsp;&nbsp;
+                `
             } else {
                 traducao_categoria_free = "Erro"
             }
 
+            versao_atual = categorias.__v + 1
+
             recebido =`
                 <tr class='categoriaLista' id='tr_${categorias._id}'>
                     <td>${categorias._id}</td>
-                    <td>${categorias.categoria}</td>
-                    <td>${traducao_categoria_free}</td>
+                    <td><input type="text" value="${categorias.categoria}" id='categoria_nome_${categorias._id}'></input></td>
+                    <td id='categoria_free_${categorias._id}' value='categoria_free_${categorias._id}'>
+                        ${recebido_categoria_free}
+                    </td>
                     <td>${categorias.createdAt}</td>
+                    <td>${versao_atual}</td>
+                    <td>
+                        <a href="#" onclick="editar('${categorias._id}')">SALVAR</a>
+                    </td>
                     <td>
                         <a href="#" onclick="excluir('${categorias._id}')">EXCLUIR</a>
                     </td>
@@ -81,6 +104,42 @@
 
             $("#listaCategorias").append(recebido)
         
+        }
+
+        //Editar categoria específica
+        async function editar(idParaEditar) {
+            idCategoriaNome = "#categoria_nome_" + idParaEditar
+            categoriaNomeNova = $(idCategoriaNome).val()
+
+            idFreeNova = "#freeNova_" + idParaEditar
+            console.log("idFreeNova: ", idFreeNova)
+            categoriaFreeNova = $(idFreeNova).val()
+            console.log("categoriaFreeNova: ", categoriaFreeNova)
+
+            var novaCategoria = {
+                _id: idParaEditar,
+                categoriaNova : categoriaNomeNova,
+                freeNova : categoriaFreeNova
+            }
+
+            console.log(novaCategoria)
+
+            /$.ajax({
+                url: "/categoria/",
+                type: 'PUT',
+                data: novaCategoria,
+                success: function(resposta) {
+                    $('.categoriaLista').remove()
+                    buscarCategorias()
+                    alert(resposta)
+                },
+                error: function(xhr) {
+                    $('.categoriaLista').remove()
+                    buscarCategorias()
+                    alert(xhr)
+                    console.log("Não deu certo a alteração!!: " + xhr.status + " " + xhr.statusText);
+                }
+            });
         }
         
         //Buscar categorias
