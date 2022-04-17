@@ -45,6 +45,7 @@
             Alternativa B: <input type="text" id="alternativaBNova"></input><br>
             Alternativa C: <input type="text" id="alternativaCNova"></input><br>
             Alternativa D: <input type="text" id="alternativaDNova"></input><br>
+            Dica: <input type="text" id="dicaNova"></input><br><br>
             info: <input type="text" id="infoNova"></input><br><br>
 
             <input type="button" value="GRAVAR NOVA PERGUNTA" onclick="gravarNovaPergunta()"></input>
@@ -64,7 +65,8 @@
                 <th>Alternativa B</th>
                 <th>alternativa C</th>
                 <th>alternativa D</th>
-                <th>Info</th>
+                <th>Fonte</th>
+                <th>Dica</th>
                 <th>Excluir</th>
             </tr>
             <!--Espaço para listart perguntas-->
@@ -128,6 +130,7 @@
                     <td>${perguntas.alternativaC}</td>
                     <td>${perguntas.alternativaD}</td>
                     <td>${perguntas.info}</td>
+                    <td>${perguntas.dica}</td>
                     <td>
                         <a href="#" onclick="excluir('${perguntas._id}')">EXCLUIR</a>
                     </td>
@@ -188,6 +191,7 @@
             alternativaBNova = $("#alternativaBNova").val(),
             alternativaCNova = $("#alternativaCNova").val(),
             alternativaDNova = $("#alternativaDNova").val(),
+            dicaNova = $("#dicaNova").val()
             infoNova = $("#infoNova").val()
 
             //Criar objeto para os dados que serão cadastrados na nova pergunta
@@ -199,13 +203,14 @@
                 alternativaB : alternativaBNova,
                 alternativaC : alternativaCNova,
                 alternativaD : alternativaDNova,
+                dica: dicaNova,
                 info: infoNova
             }
 
             //Teste - O que estão tentando cadastrar
             console.log(novaPergunta)
 
-            if( !perguntaNova || !respostaCorretaNova || !alternativaANova || !alternativaBNova || !alternativaCNova || !alternativaDNova || !infoNova ) {
+            if( !perguntaNova || !respostaCorretaNova || !alternativaANova || !alternativaBNova || !alternativaCNova || !alternativaDNova || !dicaNova || !infoNova ) {
                 alert("Impossível gravar nova pergunta. Por favor preencha todos os campos e tente novamente.")
             } else if (respostaCorretaNova != alternativaANova && respostaCorretaNova != alternativaBNova && respostaCorretaNova != alternativaCNova && respostaCorretaNova != alternativaDNova) {
                 alert("A resposta correta não está igual a nenhuma das alternativas. Por favor revise e tente novamente.")

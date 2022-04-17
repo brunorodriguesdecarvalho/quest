@@ -63,6 +63,7 @@ router.post('/pergunta', async(req, res) => {
             alternativaB : req.body.alternativaB,
             alternativaC : req.body.alternativaC,
             alternativaD : req.body.alternativaD,
+            dica : req.body.dica,
             info: req.body.info
         } 
     
