@@ -65,6 +65,7 @@
                 <th>Justificativa / Fonte</th>
                 <th>Dica</th>
                 <th>Versão</th>
+                <th>Salvar Alterações</th>
                 <th>Excluir</th>
             </tr>
             <!--Espaço para listart perguntas-->
@@ -86,6 +87,9 @@
         dropdown.length = 0
         dropdown.selectedIndex = 0
 
+        categoriasObj = []
+        idObj = []
+
         const request = new XMLHttpRequest();
         request.open('GET', '/categoria/categorias', true);
 
@@ -106,7 +110,9 @@
                         option.value = data[i].categoria;
                         dropdown.add(option);
                         //console.log(option)
+                        categoriasObj.push(data[i].categoria)
                     }
+                    console.log(categoriasObj)
                 })
             }
         )
@@ -114,40 +120,58 @@
             console.error("Erro de Fetch -", err)
         })
 
+/*         //Para popular lista de categorias
+        async function listCat(id) {
+            let option
+            let ref = document.getElementById("categoriaNova_" + id)
+
+            for (let i = 0; i < categoriasObj.length; i++) {
+                //console.log(categoriasObj[i])
+                ref.append(`<option value="` + categoriasObj[i] + `">${categoriasObj[i]}</option>`);
+            }
+            console.log(ref)
+        }
+ */
         //Buscar e listar todas as perguntas registradas
-        //<input type="text" value="${perguntas.pergunta}" id='pergunta_enunciado_nova${perguntas._id}'></input>
         async function listarPerguntas(perguntas) {
             versao_pergunta = perguntas.__v +1
 
             recebido =`
                 <tr class='perguntaLista' id='tr_${perguntas._id}'>
                     <td>${perguntas._id}</td> 
-                    <td>${perguntas.categoria}</td>
+                    <td>
+                        <select name="categoria" id="categoriaNova_${perguntas._id}">
+                            <option value="${perguntas.categoria}">${perguntas.categoria}</option>                          
+                        </select>
+                    </td>
                     <td>
                         <textarea rows="5" cols="20" id='pergunta_enunciado_nova${perguntas._id}'>${perguntas.pergunta}</textarea> 
                     </td>
                     <td>
-                        <textarea rows="5" cols="10" id='pergunta_respostaCorreta_nova${perguntas._id}'>${perguntas.respostaCorreta}</textarea> 
+                        <textarea rows="5" cols="9" id='pergunta_respostaCorreta_nova${perguntas._id}'>${perguntas.respostaCorreta}</textarea> 
                     </td>
                     <td>
-                        <textarea rows="5" cols="10" id='pergunta_alternativaA_nova${perguntas._id}'>${perguntas.alternativaA}</textarea> 
+                        <textarea rows="5" cols="9" id='pergunta_alternativaA_nova${perguntas._id}'>${perguntas.alternativaA}</textarea> 
                     </td>
                     <td>
-                        <textarea rows="5" cols="10" id='pergunta_alternativaB_nova${perguntas._id}'>${perguntas.alternativaB}</textarea> 
+                        <textarea rows="5" cols="9" id='pergunta_alternativaB_nova${perguntas._id}'>${perguntas.alternativaB}</textarea> 
                     </td>
                     <td>
-                        <textarea rows="5" cols="10" id='pergunta_alternativaC_nova${perguntas._id}'>${perguntas.alternativaC}</textarea> 
+                        <textarea rows="5" cols="9" id='pergunta_alternativaC_nova${perguntas._id}'>${perguntas.alternativaC}</textarea> 
                     </td>
                     <td>
-                        <textarea rows="5" cols="10" id='pergunta_alternativaD_nova${perguntas._id}'>${perguntas.alternativaD}</textarea> 
+                        <textarea rows="5" cols="9" id='pergunta_alternativaD_nova${perguntas._id}'>${perguntas.alternativaD}</textarea> 
                     </td>
                     <td>
-                        <textarea rows="5" cols="15" id='pergunta_info_nova${perguntas._id}'>${perguntas.info}</textarea> 
+                        <textarea rows="5" cols="10" id='pergunta_info_nova${perguntas._id}'>${perguntas.info}</textarea> 
                     </td>
                     <td>
                         <textarea rows="5" cols="10" id='pergunta_dica_nova${perguntas._id}'>${perguntas.dica}</textarea> 
                     </td>
                     <td>${versao_pergunta}</td>
+                    <td>
+                        <a href="#" onclick="editar('${perguntas._id}')">SALVAR</a>
+                    </td>
                     <td>
                         <a href="#" onclick="excluir('${perguntas._id}')">EXCLUIR</a>
                     </td>
@@ -155,9 +179,11 @@
             `
 
             $("#listaPerguntas").append(recebido)
+            //listCat(perguntas._id)
         
         }
-        
+
+    
         async function buscarPerguntas() {
             $.get(
                 '/jogoV3/perguntas',
