@@ -83,55 +83,49 @@
 
     <script>
         //Buscar e listar categorias
-        var dropdown = document.getElementById('categoriaNova');
-        dropdown.length = 0
-        dropdown.selectedIndex = 0
 
         categoriasObj = []
-        idObj = []
 
-        const request = new XMLHttpRequest();
-        request.open('GET', '/categoria/categorias', true);
+        function listarCategorias(idParaCategoria) {
+        
+            var dropdown = document.getElementById(idParaCategoria);
+            dropdown.length = 0
+            dropdown.selectedIndex = 0
 
-        fetch('/categoria/categorias')
-            .then(
-                async function(response) {                    
-                    if (response.status !== 200) {
-                        console.warn('Erro, código: ' + response.status)
-                        return
-                    }
+            const request = new XMLHttpRequest();
+            request.open('GET', '/categoria/categorias', true);
 
-                response.json().then(function(data) {
-                    let option
+            fetch('/categoria/categorias')
+                .then(
+                    async function(response) {                    
+                        if (response.status !== 200) {
+                            console.warn('Erro, código: ' + response.status)
+                            return
+                        }
 
-                    for (let i = 0; i < data.length; i++) {
-                        option = document.createElement('option');
-                        option.text = data[i].categoria;
-                        option.value = data[i].categoria;
-                        dropdown.add(option);
-                        //console.log(option)
-                        categoriasObj.push(data[i].categoria)
-                    }
-                    console.log(categoriasObj)
-                })
-            }
-        )
-        .catch(function(err) {
-            console.error("Erro de Fetch -", err)
-        })
+                    response.json().then(function(data) {
+                        let opcoesCategorias
 
-/*         //Para popular lista de categorias
-        async function listCat(id) {
-            let option
-            let ref = document.getElementById("categoriaNova_" + id)
-
-            for (let i = 0; i < categoriasObj.length; i++) {
-                //console.log(categoriasObj[i])
-                ref.append(`<option value="` + categoriasObj[i] + `">${categoriasObj[i]}</option>`);
-            }
-            console.log(ref)
+                        for (let i = 0; i < data.length; i++) {
+                            opcoesCategorias = document.createElement('option');
+                            opcoesCategorias.text = data[i].categoria;
+                            opcoesCategorias.value = data[i].categoria;
+                            dropdown.add(opcoesCategorias);
+                            //console.log(option)
+                            categoriasObj.push(data[i].categoria)
+                        }
+                        console.log("categorias: ", categoriasObj)
+                    })
+                }
+            )
+            .catch(function(err) {
+                console.error("Erro de Fetch -", err)
+            })
         }
- */
+
+        listarCategorias('categoriaNova')
+
+
         //Buscar e listar todas as perguntas registradas
         async function listarPerguntas(perguntas) {
             versao_pergunta = perguntas.__v +1
@@ -184,8 +178,10 @@
             `
 
             $("#listaPerguntas").append(recebido)
-            //listCat(perguntas._id)
-        
+            
+            idObjStr = "categoriaNova_" + perguntas._id
+            listarCategorias(idObjStr)
+
         }
 
     
@@ -200,12 +196,15 @@
                     } else {
                         console.log("Quantidade atual de perguntas no banco de dados: ", qtd)
                         perguntas.forEach(listarPerguntas)
+                        //console.log("idObj: ", idObj)
                     }
                 }
             )
         }
 
         buscarPerguntas()
+        
+        
 
         //Excluir pergunta específica
         async function excluir(idPerguntaExcluir) {
