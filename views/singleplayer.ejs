@@ -1,0 +1,207 @@
+<html>
+    <head></head>
+    <body>
+        <h1>
+            Um Jogador - Exemplo
+        </h1>
+        <hr>
+        <div>
+            <a href="/jogoV3/">Voltar ao Pré-lobby</a>
+            <h2>
+                Escolher categoria inicial das perguntas: 
+                    <select name="categoria" id="categoriaInicial"></select>
+                <button onclick="iniciar()">INICIAR JOGO AGORA!</button>
+            </h2>
+        </div>
+        <hr>
+        <div>
+            <h2>
+                Espaço para perguntas - EM CONSTRUÇÃO
+            </h2>
+            
+            <div id="perguntaRodada">
+                <strong>Pergunta:</strong>&nbsp;<span id="perguntaRodada_pergunta"></span>
+                <br>
+                <strong>Alternativa A</strong>&nbsp;<span id="perguntaRodada_alternativaA"></span>
+                <br>
+                <strong>Alternativa B:</strong>&nbsp;<span id="perguntaRodada_alternativaB"></span>
+                <br>
+                <strong>Alternativa C:</strong>&nbsp;<span id="perguntaRodada_alternativaC"></span>
+                <br>
+                <strong>Alternativa D:</strong>&nbsp;<span id="perguntaRodada_alternativaD"></span>
+                <br>
+                <strong>Dica:</strong>&nbsp;<span id="perguntaRodada_dica"></span>
+                <br>
+                <strong>Resposta Correta:</strong>&nbsp;<span id="perguntaRodada_respostaCorreta"></span>
+                <br>
+                <strong>Justificativa / Fonte:</strong>&nbsp;<span id="perguntaRodada_info"></span>
+            </div>
+        </div>
+        <hr>
+        <h2>
+            Espaço para o tabuleiro - EM CONSTRUÇÃO
+        </h2>
+        <hr>
+            <h3>
+                Espaço para os dados auxiliares - DEVERÁ SER REMOVIDO?!
+            </h3>
+            <strong>Nome do Jogador:&nbsp;</strong><%=nomeJogador%>
+            <br>
+            <strong>Categoria Rodada Atual:&nbsp;</strong>
+            <span id="categoriaRodada"></span>
+            <br>
+            <strong>Pontuação Desta Rodada:&nbsp;</strong>
+            <span id="pontuaçãoRodada"></span>
+            <br>
+            <strong>Rodada Atual:&nbsp;</strong>
+            <span id="atualRodada"></span>
+            <br>
+            <strong>Tempo da Rodada Atual:&nbsp;</strong>
+            <span id="tempoRodada"></span>
+    </body>
+    <script
+        src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous">
+    </script>
+
+    </script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+
+    <script>
+
+        //Lista de categorias
+        categoriasObjdelta = []
+
+        async function listaDelta(idParaCategoria){
+
+            $.ajax({
+                url: "/categoria/categorias",
+                type: 'GET',
+                success: (resposta) => {
+                    for (let i = 0; i < resposta.length; i++) {
+                            categoriasObjdelta.push(resposta[i].categoria)
+                    }
+
+                    var dropdown = document.getElementById(idParaCategoria);            
+                    let opcoesCategorias
+
+                    //console.log("categoriasObjdelta.length: ", categoriasObjdelta.length)
+
+                    if(!categoriasObjdelta.length || categoriasObjdelta.length==0) {
+                        console.log("Array vazia!")
+                    } else {
+                        for (let i = 0; i < categoriasObjdelta.length; i++) {
+                            opcoesCategorias = document.createElement('option');
+                            opcoesCategorias.text = categoriasObjdelta[i]
+                            opcoesCategorias.value =  categoriasObjdelta[i]
+                            //console.log("teste", opcoesCategorias)
+                            //categoriasObj.push(data[i].categoria)
+                            dropdown.add(opcoesCategorias);
+                        }
+                    }
+                    console.log("Acho que deu certo: ", categoriasObjdelta)
+                },
+                error: (xhr) => {
+                    alert(xhr)
+                    //console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.statusText);
+                }
+            });
+
+        }
+
+        listaDelta("categoriaInicial")
+
+
+
+        //Carregar dados básicos
+        const valorZerado = "Aguardando Início da partida..."
+
+        var rodada = {
+            categoriaRodada: {
+                href: document.getElementById("categoriaRodada"),
+                valor: "N/A",
+                valorInicial: valorZerado
+            },
+            pontuaçãoRodada: {
+                href: document.getElementById("pontuaçãoRodada"),
+                valor: null,
+                valorInicial: valorZerado
+            },
+            atualRodada: {
+                href: document.getElementById("atualRodada"),
+                valor: null,
+                valorInicial: valorZerado
+            },
+            tempoRodada: {
+                href: document.getElementById("tempoRodada"),
+                valor: null,
+                valorInicial: valorZerado
+            },
+            perguntaRodada: {
+                href: document.getElementById("perguntaRodada_pergunta"),
+                href_alternativaA: document.getElementById("perguntaRodada_alternativaA"),
+                href_alternativaB: document.getElementById("perguntaRodada_alternativaB"),
+                href_alternativaC: document.getElementById("perguntaRodada_alternativaC"),
+                href_alternativaD: document.getElementById("perguntaRodada_alternativaD"),
+                href_dica: document.getElementById("perguntaRodada_dica"),
+                href_respostaCorreta: document.getElementById("perguntaRodada_respostaCorreta"),
+                href_info: document.getElementById("perguntaRodada_info"),
+                pergunta: valorZerado,
+                alternativaA: valorZerado,
+                alternativaB: valorZerado,
+                alternativaC: valorZerado,
+                alternativaD: valorZerado,
+                dica: valorZerado,
+                respostaCorreta: valorZerado,
+                info: valorZerado
+            }
+        }
+
+        function carrega() {
+            $(rodada.categoriaRodada.href).append(rodada.categoriaRodada.valorInicial)
+            $(rodada.pontuaçãoRodada.href).append(rodada.pontuaçãoRodada.valorInicial)
+            $(rodada.atualRodada.href).append(rodada.atualRodada.valorInicial)
+            $(rodada.tempoRodada.href).append(rodada.tempoRodada.valorInicial)
+            $(rodada.perguntaRodada.href).append(rodada.perguntaRodada.pergunta)
+            $(rodada.perguntaRodada.href_alternativaA).append(rodada.perguntaRodada.alternativaA)
+            $(rodada.perguntaRodada.href_alternativaB).append(rodada.perguntaRodada.alternativaB)
+            $(rodada.perguntaRodada.href_alternativaC).append(rodada.perguntaRodada.alternativaC)
+            $(rodada.perguntaRodada.href_alternativaD).append(rodada.perguntaRodada.alternativaD)
+            $(rodada.perguntaRodada.href_alternativaD).append(rodada.perguntaRodada.alternativaD)
+            $(rodada.perguntaRodada.href_dica).append(rodada.perguntaRodada.dica)
+            $(rodada.perguntaRodada.href_respostaCorreta).append(rodada.perguntaRodada.respostaCorreta)
+            $(rodada.perguntaRodada.href_info).append(rodada.perguntaRodada.info)
+        }
+
+        carrega()
+
+        questoes_ja_respondidas = [{_id:"000000000000000000000000"}]
+
+        function iniciar() {
+            categoriaEnv = $('#categoriaInicial').val()
+            console.log("Iniciando Jogo...", categoriaEnv)
+
+
+
+            $.ajax({
+                url: "/jogoV3/pergunta",
+                type: 'GET',
+                body: {
+                    categoria: categoriaEnv,
+                    questoes_ja_respondidas: [{_id:"000000000000000000000000"}]
+
+                },
+                success: function(resposta) {
+/*                     $('.perguntaLista').remove()
+                    buscarPerguntas() */
+                    console.log(resposta)
+                },
+                error: function(xhr) {
+                    alert(xhr)
+                    //console.log("Não deu certo a alteração de uma nova pergunta!!: " + xhr.status + " " + xhr.statusText);
+                }
+            });
+        }
+
+    </script>
+</html>

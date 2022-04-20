@@ -55,13 +55,12 @@ router.get('/', async (req, res) => {
 
         if(!categoria) {
             res.status(401).send("Falha do Cliente: Faltou informar nome da categoria a ser deletada")
-        } else if(!await Category.findOne({ categoria: categoria }))
+        } else if(!await Category.findOne({ categoria: categoria })) {
             return res.status(412).send({error: 'Falha - Categoria não existe.Por favor informe outra categoria.'})
-    
-
-        const onecategory = await Category.findOne({categoria: categoria})
-
-        return res.send({onecategory})
+        } else {
+            const onecategory = await Category.findOne({categoria: categoria}, {categoria:1})   
+        }
+        
 
     } catch (err) {
         return res.status(400).send( {error: 'Falha - Leitura não realizada.'} )
@@ -74,7 +73,7 @@ router.get('/categorias', async (req, res) => {
 
     try {
         
-        const allcategories = await Category.find({})
+        const allcategories = await Category.find({}).sort({categoria:1})
 
         return res.send(allcategories)
 

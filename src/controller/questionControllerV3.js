@@ -26,7 +26,7 @@ router.get('/', async(req,res) => {
     if (emailJogador == "superadmin@superadmin") {
         res.render('admin', {nomeJogador: nomeJogador, perfil: "SUPER ADMIN"})
     } else {
-        res.render('jogo', {nomeJogador: nomeJogador, perfil: "Jogador"})
+        res.render('prelobby', {nomeJogador: nomeJogador, perfil: "Jogador"})
     }
 })
 
@@ -88,7 +88,7 @@ router.post('/pergunta', async(req, res) => {
                 })}
         })
     }
-})
+}) 
 
 //READ
 
@@ -97,7 +97,7 @@ router.get('/perguntas', async(req,res)=>{
     MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
         if (err) throw err;
         var dbo = QuestDB.db(bancodedados);
-        dbo.collection(colecao).find().toArray(function await(err, questions) {
+        dbo.collection(colecao).find().sort({categoria:1, pergunta: 1}).toArray(function await(err, questions) {
             if (err) throw err;
             res.status(200).send(questions)
             QuestDB.close(); 
@@ -108,28 +108,23 @@ router.get('/perguntas', async(req,res)=>{
 //READ - REGRA DE FRONT - ÚNICA PERGUNTA QUALQUER DESDE QUE AINDA NÃO RESPONDIDA DURANTE A SESSÃO
 //*** PARA SABER AS PERGUNTAS JÁ RESPONDIDAS, O FRONT PRECISA INFORMAR O ID DA PERGUNTA
 router.get('/pergunta', async(req,res) => {
-    if(!req.body.categoria || !req.body) {
+    if(!req.body.categoria || !req.body.questoes_ja_respondidas) {
         res.status(400).send("Tá de zoeira né tio?! rsrs")
     } else {
         var categoriaReq = String(req.body.categoria)
         var respondidas = req.body.questoes_ja_respondidas
-
-        //console.log("Categorias Informadas - REQ: ", categoriaReq)
-        //console.log("Questões Respondidas - REQ: ", respondidas)
-        ///console.log(respondidas.length)
-
         var filtro
 
         if(respondidas.length==0 && !req.body.categoria) {
-            //console.log("Sem info de ID")
+
             filtro = {}
+
         } else {
+
             filtro = []
             filtro.push({ categoria: categoriaReq })
 
             if (respondidas.length===0) {
-
-                //console.log("Sem perguntas respondidas!")
             
                 filtro = { categoria: categoriaReq }
 
@@ -144,24 +139,24 @@ router.get('/pergunta', async(req,res) => {
 
                 filtro = { $and: filtro }
 
-                //console.log("filtro2: ", filtro)
+                MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
+                    if(err) throw err;
+                    var dbo = QuestDB.db(bancodedados);
+                    var alea = Math.floor(Math.random() * 11)
+                    console.log(alea)
+                    dbo.collection(colecao).find(filtro).limit(1).skip(alea).toArray(function await(err, questions) {
+                        if(err) throw err
+                        else if(questions.length==0) {
+                            res.status(400).send("Deu ruim, pois a query não tem nenhum resultado com esses filtros (Categoria + Exclusão de certos IDs")
+                        } else {
+                            res.status(200).send(questions)
+                        }
+                        QuestDB.close(); 
+                    })
+                })
             
             }
         }
-
-        MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
-            if(err) throw err;
-            var dbo = QuestDB.db(bancodedados);
-            dbo.collection(colecao).find(filtro).limit(1).toArray(function await(err, questions) {
-                if(err) throw err
-                else if(questions.length==0) {
-                    res.status(400).send("Deu ruim, pois a query não tem nenhum resultado com esses filtros (Categoria + Exclusão de certos IDs")
-                } else {
-                    res.status(200).send(questions)
-                }
-                QuestDB.close(); 
-            })
-        })
     }
 })
 
@@ -232,7 +227,6 @@ router.put('/pergunta', async(req, res) => {
     }
 })
 
-
 //DELETE
 router.delete('/pergunta', async(req, res) => {
 
@@ -258,6 +252,14 @@ router.delete('/pergunta', async(req, res) => {
             })
         }
     })
+})
+
+router.get('/singleplayer', async(req,res) => {
+    res.render('singleplayer')
+})
+
+router.get('/multiplayer', async(req,res) => {
+    res.render('multiplayer')
 })
 
 module.exports = app => app.use('/jogoV3', router)
