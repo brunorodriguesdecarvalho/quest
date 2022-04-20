@@ -141,8 +141,8 @@
                 error: function(xhr) {
                     $('.categoriaLista').remove()
                     buscarCategorias()
-                    alert(xhr)
-                    console.log("Não deu certo a alteração!!: " + xhr.status + " " + xhr.statusText);
+                    alert(xhr.status, ":", xhr.responseText)
+                    console.log("Não deu certo a alteração!!: " + xhr.status + " " + xhr.responseText);
                 }
             });
         }
@@ -181,8 +181,8 @@
                     alert(resposta)
                 },
                 error: function(xhr) {
-                    alert(xhr)
-                    console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.statusText);
+                    alert(xhr.status, ":", xhr.responseText)
+                    console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.responseText);
                 }
             });
         }
@@ -216,7 +216,7 @@
                         alert("Categoria registrada com sucesso!")
                     },
                     error: function(xhr) {
-                        alert(xhr)
+                        alert(xhr.status, ":", xhr.responseText)
                         console.log("Não deu certo a criação de uma nova categoria!!: " + xhr.status + " " + xhr.statusText);
                     }
                 });

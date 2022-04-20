@@ -108,14 +108,24 @@ router.get('/perguntas', async(req,res)=>{
 //READ - REGRA DE FRONT - ÚNICA PERGUNTA QUALQUER DESDE QUE AINDA NÃO RESPONDIDA DURANTE A SESSÃO
 //*** PARA SABER AS PERGUNTAS JÁ RESPONDIDAS, O FRONT PRECISA INFORMAR O ID DA PERGUNTA
 router.get('/pergunta', async(req,res) => {
-    if(!req.body.categoria || !req.body.questoes_ja_respondidas) {
-        res.status(400).send("Tá de zoeira né tio?! rsrs")
+
+    //console.log("O que foi recebido-body: ", req.body)
+    //console.log("O que foi recebido-query: ", req.query)
+
+    data = JSON.parse(req.headers.data)
+
+    //console.log("O que foi recebido-headers.data: ", data )
+
+    if(!data.categoria || !data.questoes_ja_respondidas) {
+        console.log("categoria: ",!data.categoria)
+        console.log("questões respondidas: ",!data.questoes_ja_respondidas)
+        res.status(421).send("Tá de zoeira né tio?! rsrs")
     } else {
-        var categoriaReq = String(req.body.categoria)
-        var respondidas = req.body.questoes_ja_respondidas
+        var categoriaReq = String(data.categoria)
+        var respondidas = data.questoes_ja_respondidas
         var filtro
 
-        if(respondidas.length==0 && !req.body.categoria) {
+        if(respondidas.length==0 && !data.categoria) {
 
             filtro = {}
 
@@ -136,14 +146,14 @@ router.get('/pergunta', async(req,res) => {
                     item = ObjectId(item)
                     filtro.push( { _id : { $ne: item } } )
                 }
-
-                filtro = { $and: filtro }
+ 
+                filtro = { $and: filtro }  
 
                 MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, QuestDB) {
                     if(err) throw err;
                     var dbo = QuestDB.db(bancodedados);
                     var alea = Math.floor(Math.random() * 11)
-                    console.log(alea)
+                    //console.log(alea)
                     dbo.collection(colecao).find(filtro).limit(1).skip(alea).toArray(function await(err, questions) {
                         if(err) throw err
                         else if(questions.length==0) {

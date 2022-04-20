@@ -127,7 +127,7 @@
                     listarCategorias('categoriaNova')
                 },
                 error: (xhr) => {
-                    alert(xhr)
+                    alert(xhr.status, ":", xhr.responseText)
                     //console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.statusText);
                 }
             });
@@ -227,7 +227,7 @@
                     alert(resposta)
                 },
                 error: function(xhr) {
-                    alert(xhr)
+                    alert(xhr.status, ":", xhr.responseText)
                     //console.log("Não deu certo a exclusão!!: " + xhr.status + " " + xhr.statusText);
                 }
             });
@@ -279,7 +279,7 @@
                         alert(resposta)
                     },
                     error: function(xhr) {
-                        alert(xhr)
+                        alert(xhr.status, ":", xhr.responseText)
                         //console.log("Não deu certo a alteração de uma nova pergunta!!: " + xhr.status + " " + xhr.statusText);
                     }
                 });
@@ -331,7 +331,7 @@
                         alert(resposta)
                     },
                     error: function(xhr) {
-                        alert(xhr)
+                        alert(xhr.status, ":", xhr.responseText)
                         //console.log("Não deu certo a criação de uma nova pergunta!!: " + xhr.status + " " + xhr.statusText);
                     }
                 });

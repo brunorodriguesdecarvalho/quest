@@ -122,7 +122,7 @@ router.put('/', async (req, res) => {
                                         if (err) {
                                             console.log("Erro ao tentar atualizar as categorias das perguntas já existentes: ", err)
                                             res.status(462).send("Impossível alterar essa categoria. Tente outro ID ou insulte o Bruno!")
-                                        } else if (confirmacao.matchedCount > 0 ) {
+                                        } else if (confirmacao.acknowledged == true ) {
                                             console.log("Categoria alterada com sucesso nas perguntas: ",confirmacao)
                                             res.status(200).send("Categoria atualizada nas perguntas com sucesso.")
                                         } else {

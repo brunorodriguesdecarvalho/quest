@@ -99,7 +99,7 @@
                             dropdown.add(opcoesCategorias);
                         }
                     }
-                    console.log("Acho que deu certo: ", categoriasObjdelta)
+                    //console.log("Acho que deu certo: ", categoriasObjdelta)
                 },
                 error: (xhr) => {
                     alert(xhr)
@@ -154,7 +154,11 @@
                 dica: valorZerado,
                 respostaCorreta: valorZerado,
                 info: valorZerado
-            }
+            },
+            questoes_respondidas: [
+                {_id:"000000000000000000000000"}
+            ]
+
         }
 
         function carrega() {
@@ -175,30 +179,34 @@
 
         carrega()
 
-        questoes_ja_respondidas = [{_id:"000000000000000000000000"}]
-
         function iniciar() {
-            categoriaEnv = $('#categoriaInicial').val()
-            console.log("Iniciando Jogo...", categoriaEnv)
+            alert("Jogo em construção...podem ocorrer erros. Por favor avise!")
+            //categoriaEnv = $('#categoriaInicial').val()
+            requisicao = {
+                categoria: $('#categoriaInicial').val(),
+                questoes_ja_respondidas: [
+                    {_id:"000000000000000000000000"}
+                ] 
+            },
 
+            console.log("Requisição: ", requisicao)
 
-
-            $.ajax({
+           $.ajax({
                 url: "/jogoV3/pergunta",
                 type: 'GET',
-                body: {
-                    categoria: categoriaEnv,
-                    questoes_ja_respondidas: [{_id:"000000000000000000000000"}]
-
+                dataType: 'json',
+                headers: {
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(requisicao),
                 },
                 success: function(resposta) {
-/*                     $('.perguntaLista').remove()
-                    buscarPerguntas() */
+                    //$('.perguntaLista').remove()
+                    //buscarPerguntas()
                     console.log(resposta)
                 },
                 error: function(xhr) {
                     alert(xhr)
-                    //console.log("Não deu certo a alteração de uma nova pergunta!!: " + xhr.status + " " + xhr.statusText);
+                    console.log("Não deu certo a alteração de uma nova pergunta!!: " + xhr);
                 }
             });
         }
