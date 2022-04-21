@@ -258,13 +258,15 @@
         }
 
         function respostaValidar(resposta) {
-            requisicao = String($(resposta).attr("res"))
+            resposta = String($(resposta).attr("res"))
             if (resposta == rodada.perguntaRodada.respostaCorreta) {
-                alert("RESPOSTA CORRETA!")
+                alert("CERTA RESPOSTA!")
             } else { 
                 res = "RESPOSTA ERRADA! A resposta correta era " + String(rodada.perguntaRodada.respostaCorreta)
-                res = res + ". Explicação: " + String(rodada.perguntaRodada.info)
+                res = res + ". Explicação do Jogo: " + String(rodada.perguntaRodada.info)
                 alert(res)
+                //console.log("resposta dada: ", resposta)
+                //console.log("resposta correta: ", rodada.perguntaRodada.respostaCorreta)
             }
 
             requisicao = {
