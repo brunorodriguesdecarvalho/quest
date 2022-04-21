@@ -8,56 +8,76 @@
         <div>
             <a href="/jogoV3/">Voltar ao Pré-lobby</a>
             <h2>
-                Escolher categoria inicial das perguntas: 
+                CATEGORIA DE PERGUNTAS: 
                     <select name="categoria" id="categoriaInicial"></select>
-                <button onclick="iniciar()">INICIAR JOGO AGORA!</button>
+                <button onclick="iniciar()">INICIAR JOGO AGORA ou PRÓXIMA PERGUNTA!</button>
             </h2>
         </div>
         <hr>
         <div>
             <h2>
-                Espaço para perguntas - EM CONSTRUÇÃO
+                PERGUNTAS (JOGO)
             </h2>
             
             <div id="perguntaRodada">
+                <strong>Objetivo / Instrução:</strong>&nbsp;Para responder basta clicar na opção desejada.</span>
+                <br>
+                <strong>Categoria:</strong>&nbsp;<span id="perguntaRodada_categoria"></span>
+                <br>
                 <strong>Pergunta:</strong>&nbsp;<span id="perguntaRodada_pergunta"></span>
                 <br>
-                <strong>Alternativa A</strong>&nbsp;<span id="perguntaRodada_alternativaA"></span>
-                <br>
-                <strong>Alternativa B:</strong>&nbsp;<span id="perguntaRodada_alternativaB"></span>
-                <br>
-                <strong>Alternativa C:</strong>&nbsp;<span id="perguntaRodada_alternativaC"></span>
-                <br>
-                <strong>Alternativa D:</strong>&nbsp;<span id="perguntaRodada_alternativaD"></span>
-                <br>
+                <ul>
+                    <li id="ativoA" onclick="respostaValidar('#ativoA')">
+                        <strong>Alternativa A:</strong>&nbsp;<span id="perguntaRodada_alternativaA"></span>
+                    </li>
+                    <li  id="ativoB" onclick="respostaValidar('#ativoB')">
+                        <strong>Alternativa B:</strong>&nbsp;<span id="perguntaRodada_alternativaB"></span>
+                    </li>
+                    <li id="ativoC" onclick="respostaValidar('#ativoC')">
+                        <strong>Alternativa C:</strong>&nbsp;<span id="perguntaRodada_alternativaC"></span>
+                    </li>
+                    <li id="ativoD" onclick="respostaValidar('#ativoD')">
+                        <strong>Alternativa D:</strong>&nbsp;<span id="perguntaRodada_alternativaD"></span>
+                    </li>
+                </ul>
+                
                 <strong>Dica:</strong>&nbsp;<span id="perguntaRodada_dica"></span>
                 <br>
-                <strong>Resposta Correta:</strong>&nbsp;<span id="perguntaRodada_respostaCorreta"></span>
-                <br>
-                <strong>Justificativa / Fonte:</strong>&nbsp;<span id="perguntaRodada_info"></span>
             </div>
         </div>
         <hr>
         <h2>
-            Espaço para o tabuleiro - EM CONSTRUÇÃO
+            TABULEIRO - PLACEHOLDER/EM CONSTRUÇÃO
         </h2>
         <hr>
-            <h3>
-                Espaço para os dados auxiliares - DEVERÁ SER REMOVIDO?!
-            </h3>
+        <h3>
+            DADOS AUXILIARES - SERÃO OCULTOS ou REALOCADOS!
+        </h3>
+        <small>
             <strong>Nome do Jogador:&nbsp;</strong><%=nomeJogador%>
             <br>
-            <strong>Categoria Rodada Atual:&nbsp;</strong>
-            <span id="categoriaRodada"></span>
-            <br>
+
             <strong>Pontuação Desta Rodada:&nbsp;</strong>
             <span id="pontuaçãoRodada"></span>
             <br>
-            <strong>Rodada Atual:&nbsp;</strong>
+
+            <strong>Rodada Atual (qtd perguntas respondidas):&nbsp;</strong>
             <span id="atualRodada"></span>
             <br>
-            <strong>Tempo da Rodada Atual:&nbsp;</strong>
+
+            <strong>Data e Hora de Início do Jogo:&nbsp;</strong>
+            <span id="dataInicioRodada"></span>
+            <br>
+
+            <strong>Data e Hora Atual:&nbsp;</strong>
+            <span id="dataAgora"></span>
+            <br>
+
+            <strong>Tempo Restante da Rodada Atual:&nbsp;</strong>
             <span id="tempoRodada"></span>
+
+        </small>
+            
     </body>
     <script
         src="https://code.jquery.com/jquery-3.6.0.js"
@@ -111,17 +131,10 @@
 
         listaDelta("categoriaInicial")
 
-
-
         //Carregar dados básicos
         const valorZerado = "Aguardando Início da partida..."
 
         var rodada = {
-            categoriaRodada: {
-                href: document.getElementById("categoriaRodada"),
-                valor: "N/A",
-                valorInicial: valorZerado
-            },
             pontuaçãoRodada: {
                 href: document.getElementById("pontuaçãoRodada"),
                 valor: null,
@@ -139,6 +152,7 @@
             },
             perguntaRodada: {
                 href: document.getElementById("perguntaRodada_pergunta"),
+                href_categoria: document.getElementById("perguntaRodada_categoria"),
                 href_alternativaA: document.getElementById("perguntaRodada_alternativaA"),
                 href_alternativaB: document.getElementById("perguntaRodada_alternativaB"),
                 href_alternativaC: document.getElementById("perguntaRodada_alternativaC"),
@@ -146,6 +160,7 @@
                 href_dica: document.getElementById("perguntaRodada_dica"),
                 href_respostaCorreta: document.getElementById("perguntaRodada_respostaCorreta"),
                 href_info: document.getElementById("perguntaRodada_info"),
+                categoria: valorZerado,
                 pergunta: valorZerado,
                 alternativaA: valorZerado,
                 alternativaB: valorZerado,
@@ -161,8 +176,8 @@
 
         }
 
-        function carrega() {
-            $(rodada.categoriaRodada.href).append(rodada.categoriaRodada.valorInicial)
+        function carregaInicio() {
+            $(rodada.perguntaRodada.href_categoria).append(rodada.perguntaRodada.categoria)
             $(rodada.pontuaçãoRodada.href).append(rodada.pontuaçãoRodada.valorInicial)
             $(rodada.atualRodada.href).append(rodada.atualRodada.valorInicial)
             $(rodada.tempoRodada.href).append(rodada.tempoRodada.valorInicial)
@@ -171,27 +186,51 @@
             $(rodada.perguntaRodada.href_alternativaB).append(rodada.perguntaRodada.alternativaB)
             $(rodada.perguntaRodada.href_alternativaC).append(rodada.perguntaRodada.alternativaC)
             $(rodada.perguntaRodada.href_alternativaD).append(rodada.perguntaRodada.alternativaD)
-            $(rodada.perguntaRodada.href_alternativaD).append(rodada.perguntaRodada.alternativaD)
             $(rodada.perguntaRodada.href_dica).append(rodada.perguntaRodada.dica)
             $(rodada.perguntaRodada.href_respostaCorreta).append(rodada.perguntaRodada.respostaCorreta)
             $(rodada.perguntaRodada.href_info).append(rodada.perguntaRodada.info)
         }
 
-        carrega()
+        carregaInicio()
 
-        function iniciar() {
-            alert("Jogo em construção...podem ocorrer erros. Por favor avise!")
-            //categoriaEnv = $('#categoriaInicial').val()
-            requisicao = {
-                categoria: $('#categoriaInicial').val(),
-                questoes_ja_respondidas: [
-                    {_id:"000000000000000000000000"}
-                ] 
-            },
+        function carregaPergunta(pergunta) {
+            $(rodada.perguntaRodada.href_categoria).empty()
+            $(rodada.perguntaRodada.href_categoria).append(pergunta.categoria)
 
-            console.log("Requisição: ", requisicao)
+            $(rodada.perguntaRodada.href).empty()
+            $(rodada.perguntaRodada.href).append(pergunta.pergunta)
 
-           $.ajax({
+            $(rodada.perguntaRodada.href_alternativaA).empty()
+            $(rodada.perguntaRodada.href_alternativaA).append(pergunta.alternativaA)
+            $("#ativoA").attr("res", pergunta.alternativaA)
+
+            $(rodada.perguntaRodada.href_alternativaB).empty()
+            $(rodada.perguntaRodada.href_alternativaB).append(pergunta.alternativaB)
+            $("#ativoB").attr("res", pergunta.alternativaB)
+
+            $(rodada.perguntaRodada.href_alternativaC).empty()
+            $(rodada.perguntaRodada.href_alternativaC).append(pergunta.alternativaC)
+            $("#ativoC").attr("res", pergunta.alternativaC)
+
+            $(rodada.perguntaRodada.href_alternativaD).empty()
+            $(rodada.perguntaRodada.href_alternativaD).append(pergunta.alternativaD)
+            $("#ativoD").attr("res", pergunta.alternativaD)
+
+            $(rodada.perguntaRodada.href_dica).empty()
+            $(rodada.perguntaRodada.href_dica).append("Não é um jogador VIP - PENDENTE")
+            rodada.perguntaRodada.dica = pergunta.dica
+
+            $(rodada.perguntaRodada.href_respostaCorreta).empty()
+            $(rodada.perguntaRodada.href_respostaCorreta).append("Aguardando Jogador responder a pergunta.")
+            rodada.perguntaRodada.respostaCorreta = pergunta.respostaCorreta
+
+            $(rodada.perguntaRodada.href_info).empty()
+            $(rodada.perguntaRodada.href_info).append("Aguardando Jogador responder a pergunta.")
+            rodada.perguntaRodada.info = pergunta.info
+        }
+
+        function novapergunta(requisicao){
+            $.ajax({
                 url: "/jogoV3/pergunta",
                 type: 'GET',
                 dataType: 'json',
@@ -199,17 +238,41 @@
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(requisicao),
                 },
-                success: function(resposta) {
-                    //$('.perguntaLista').remove()
-                    //buscarPerguntas()
-                    console.log(resposta)
+                success: function(pergunta) {
+                    rodada.questoes_respondidas.push({_id:String(pergunta[0]._id)})
+                    carregaPergunta(pergunta[0])
                 },
                 error: function(xhr) {
-                    alert(xhr)
-                    console.log("Não deu certo a alteração de uma nova pergunta!!: " + xhr);
+                    alert(xhr.responseText)
                 }
             });
         }
 
+        function iniciar() {
+            requisicao = {
+                categoria: $('#categoriaInicial').val(),
+                questoes_ja_respondidas: rodada.questoes_respondidas 
+            },
+            //console.log("Requisição: ", requisicao)
+           novapergunta(requisicao)
+        }
+
+        function respostaValidar(resposta) {
+            requisicao = String($(resposta).attr("res"))
+            if (resposta == rodada.perguntaRodada.respostaCorreta) {
+                alert("RESPOSTA CORRETA!")
+            } else { 
+                res = "RESPOSTA ERRADA! A resposta correta era " + String(rodada.perguntaRodada.respostaCorreta)
+                res = res + ". Explicação: " + String(rodada.perguntaRodada.info)
+                alert(res)
+            }
+
+            requisicao = {
+                categoria: $('#categoriaInicial').val(),
+                questoes_ja_respondidas: rodada.questoes_respondidas 
+            }
+
+            novapergunta(requisicao)
+        }
     </script>
 </html>

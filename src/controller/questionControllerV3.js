@@ -117,8 +117,8 @@ router.get('/pergunta', async(req,res) => {
     //console.log("O que foi recebido-headers.data: ", data )
 
     if(!data.categoria || !data.questoes_ja_respondidas) {
-        console.log("categoria: ",!data.categoria)
-        console.log("questões respondidas: ",!data.questoes_ja_respondidas)
+        //console.log("categoria: ",!data.categoria)
+        //console.log("questões respondidas: ",!data.questoes_ja_respondidas)
         res.status(421).send("Tá de zoeira né tio?! rsrs")
     } else {
         var categoriaReq = String(data.categoria)
@@ -157,7 +157,7 @@ router.get('/pergunta', async(req,res) => {
                     dbo.collection(colecao).find(filtro).limit(1).skip(alea).toArray(function await(err, questions) {
                         if(err) throw err
                         else if(questions.length==0) {
-                            res.status(400).send("Deu ruim, pois a query não tem nenhum resultado com esses filtros (Categoria + Exclusão de certos IDs")
+                            res.status(421).send("Não há outras perguntas para exibir no momento. Peça para o administrador cadastrar mais e tente novamente.")
                         } else {
                             res.status(200).send(questions)
                         }
